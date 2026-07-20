@@ -13,7 +13,11 @@ export function EmptyState({ title, description }: EmptyStateProps) {
       <Text variant="title" className="text-center">
         {title}
       </Text>
-      {description ? <Text className="text-center text-muted">{description}</Text> : null}
+      {description ? (
+        <Text className="text-center" tone="muted">
+          {description}
+        </Text>
+      ) : null}
     </View>
   );
 }

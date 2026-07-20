@@ -16,10 +16,12 @@ export function ErrorState({
 }: ErrorStateProps) {
   return (
     <View className="items-center gap-3 rounded-xl border border-red-200 bg-surface p-6">
-      <Text variant="title" className="text-center text-error">
+      <Text className="text-center" tone="error" variant="title">
         {title}
       </Text>
-      <Text className="text-center text-muted">{description}</Text>
+      <Text className="text-center" tone="muted">
+        {description}
+      </Text>
       {onRetry ? <Button label="Try again" onPress={onRetry} variant="outline" /> : null}
     </View>
   );

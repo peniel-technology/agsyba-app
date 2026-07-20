@@ -1,11 +1,16 @@
 export const colors = {
   background: '#F8FAFC',
   surface: '#FFFFFF',
+  subtleSurface: '#FAFAF9',
   text: '#0F172A',
   muted: '#64748B',
   border: '#E2E8F0',
+  subtleBorder: '#F4F4F5',
   primary: '#2563EB',
   primaryForeground: '#FFFFFF',
+  brand: '#C9504B',
+  brandForeground: '#FFFFFF',
+  logoAccent: '#474747',
   success: '#16A34A',
   error: '#DC2626',
 } as const;

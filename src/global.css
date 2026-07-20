@@ -6,11 +6,15 @@
   :root {
     --color-background: 248 250 252;
     --color-surface: 255 255 255;
+    --color-subtle-surface: 250 250 249;
     --color-text: 15 23 42;
     --color-muted: 100 116 139;
     --color-border: 226 232 240;
+    --color-subtle-border: 244 244 245;
     --color-primary: 37 99 235;
     --color-primary-foreground: 255 255 255;
+    --color-brand: 201 80 75;
+    --color-brand-foreground: 255 255 255;
     --color-success: 22 163 74;
     --color-error: 220 38 38;
   }
