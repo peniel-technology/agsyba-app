@@ -85,7 +85,6 @@ export function ShopByCategory({
 
       <FlatList
         accessibilityLabel="Shopping categories"
-        className="self-start"
         contentContainerStyle={{
           gap: spacing[4],
           paddingLeft: spacing[4],
@@ -101,7 +100,6 @@ export function ShopByCategory({
         removeClippedSubviews={false}
         renderItem={renderCategory}
         showsHorizontalScrollIndicator={false}
-        style={{ maxWidth: layout.categoryCarouselMaxWidth }}
       />
     </View>
   );

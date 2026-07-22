@@ -1,10 +1,9 @@
 export const layout = {
   bottomTabBarHeight: 64,
-  categoryCarouselMaxWidth: 390,
   categoryCircleSize: 68,
-  heroCardMaxSize: 384,
   productCardImageHeight: 190,
   productCardWidth: 192,
+  productGridMinimumColumns: 2,
   promotionalBannerHeight: 176,
   styleCardHeight: 144,
   styleCardWidth: 112,

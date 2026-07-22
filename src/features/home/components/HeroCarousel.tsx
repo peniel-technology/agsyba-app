@@ -14,7 +14,6 @@ import {
   gradients,
   iconSizes,
   iconStrokeWidths,
-  layout,
   motion,
   spacing,
 } from '@/theme';
@@ -108,7 +107,7 @@ interface CarouselSlide {
 
 export function HeroCarousel({ onSlidePress, slides }: HeroCarouselProps) {
   const { width: windowWidth } = useWindowDimensions();
-  const cardSize = Math.min(windowWidth - spacing[8], layout.heroCardMaxSize);
+  const cardSize = windowWidth - spacing[8];
   const snapInterval = cardSize + spacing[5];
   const carouselSlides = useMemo<readonly CarouselSlide[]>(() => {
     const originalSlides = slides.map((slide) => ({

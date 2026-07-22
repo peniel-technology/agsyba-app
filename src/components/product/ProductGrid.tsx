@@ -23,8 +23,12 @@ export function ProductGrid({
   title,
 }: ProductGridProps) {
   const { width } = useWindowDimensions();
-  const availableCardWidth = (width - spacing[8] - spacing[4]) / 2;
-  const cardWidth = Math.min(layout.productCardWidth, availableCardWidth);
+  const contentWidth = width - spacing[8];
+  const columnCount = Math.max(
+    layout.productGridMinimumColumns,
+    Math.floor((contentWidth + spacing[4]) / (layout.productCardWidth + spacing[4])),
+  );
+  const cardWidth = (contentWidth - spacing[4] * (columnCount - 1)) / columnCount;
 
   if (products.length === 0) {
     return null;
