@@ -11,6 +11,8 @@ export const colors = {
   brand: '#C9504B',
   brandForeground: '#FFFFFF',
   logoAccent: '#474747',
+  drawerBackdrop: '#00000066',
+  drawerPromotion: '#292524',
   sale: '#DC2626',
   saleSurface: '#FFF1F2',
   saleBadge: '#FEE2E2',

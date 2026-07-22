@@ -1,9 +1,11 @@
 import { Grid3X3, Heart, Home, ShoppingBag, UserRound, type LucideIcon } from 'lucide-react-native';
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/ui/Text';
-import { colors, iconSizes, iconStrokeWidths, layout, shadows } from '@/theme';
+import { colors, iconSizes, iconStrokeWidths, layout, motion, shadows } from '@/theme';
 
 export type BottomTabId = 'home' | 'category' | 'shop' | 'wishlist' | 'account';
 
@@ -15,6 +17,7 @@ interface BottomTabItem {
 
 interface BottomTabBarProps {
   activeTab: BottomTabId;
+  enabledTabs?: readonly BottomTabId[];
   onTabPress?: (tab: BottomTabId) => void;
 }
 
@@ -39,7 +42,20 @@ const styles = StyleSheet.create({
   },
 });
 
-export function BottomTabBar({ activeTab, onTabPress }: BottomTabBarProps) {
+export function BottomTabBar({ activeTab, enabledTabs, onTabPress }: BottomTabBarProps) {
+  const activeIndex = bottomTabItems.findIndex((item) => item.id === activeTab);
+  const indicatorPosition = useSharedValue(activeIndex);
+
+  useEffect(() => {
+    indicatorPosition.value = withTiming(activeIndex, {
+      duration: motion.tabIndicatorTransitionMs,
+    });
+  }, [activeIndex, indicatorPosition]);
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    left: `${(indicatorPosition.value / bottomTabItems.length) * 100}%`,
+  }));
+
   return (
     <SafeAreaView className="bg-surface" edges={bottomEdges}>
       <View
@@ -48,19 +64,30 @@ export function BottomTabBar({ activeTab, onTabPress }: BottomTabBarProps) {
         className="flex-row items-center border-t border-subtle-border bg-surface py-2.5"
         style={styles.bar}
       >
+        <Animated.View
+          accessibilityElementsHidden
+          className="absolute top-0 h-0.5 rounded-full bg-brand"
+          importantForAccessibility="no-hide-descendants"
+          pointerEvents="none"
+          style={[{ width: `${100 / bottomTabItems.length}%` }, indicatorStyle]}
+        />
         {bottomTabItems.map((item) => {
           const isActive = item.id === activeTab;
+          const isEnabled =
+            !isActive &&
+            onTabPress !== undefined &&
+            (enabledTabs === undefined || enabledTabs.includes(item.id));
           const Icon = item.icon;
 
           return (
             <Pressable
               accessibilityLabel={`${item.label} tab`}
               accessibilityRole="tab"
-              accessibilityState={{ disabled: !onTabPress, selected: isActive }}
+              accessibilityState={{ disabled: !isEnabled, selected: isActive }}
               className="flex-1 items-center gap-1 active:opacity-70"
-              disabled={!onTabPress}
+              disabled={!isEnabled}
               key={item.id}
-              onPress={onTabPress ? () => onTabPress(item.id) : undefined}
+              onPress={isEnabled ? () => onTabPress(item.id) : undefined}
             >
               <Icon
                 accessible={false}

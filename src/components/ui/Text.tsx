@@ -7,6 +7,7 @@ interface TextProps extends ComponentProps<typeof NativeText> {
     | 'sectionHeading'
     | 'brand'
     | 'heading'
+    | 'promotionalTitle'
     | 'title'
     | 'body'
     | 'bodyStrong'
@@ -30,6 +31,7 @@ export function Text({ variant = 'body', tone = 'default', className = '', ...pr
     sectionHeading: 'text-xl font-instrument-serif leading-6',
     brand: 'text-xl font-manrope-medium',
     heading: 'text-3xl font-manrope-bold',
+    promotionalTitle: 'text-3xl font-instrument-serif',
     title: 'text-xl font-manrope-bold',
     body: 'text-base font-manrope',
     bodyStrong: 'text-base font-manrope-bold',

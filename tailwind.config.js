@@ -20,6 +20,8 @@ module.exports = {
         'primary-foreground': 'rgb(var(--color-primary-foreground) / <alpha-value>)',
         brand: 'rgb(var(--color-brand) / <alpha-value>)',
         'brand-foreground': 'rgb(var(--color-brand-foreground) / <alpha-value>)',
+        'drawer-backdrop': 'rgb(var(--color-drawer-backdrop) / <alpha-value>)',
+        'drawer-promotion': 'rgb(var(--color-drawer-promotion) / <alpha-value>)',
         sale: 'rgb(var(--color-sale) / <alpha-value>)',
         'sale-surface': 'rgb(var(--color-sale-surface) / <alpha-value>)',
         'sale-badge': 'rgb(var(--color-sale-badge) / <alpha-value>)',

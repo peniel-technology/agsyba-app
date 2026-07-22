@@ -46,7 +46,7 @@ export function PromotionalBanner({ content, onPress, variant = 'brand' }: Promo
           <Text
             className={titleClassName}
             tone="brandForeground"
-            variant={isSale ? 'display' : 'heading'}
+            variant={isSale ? 'display' : 'promotionalTitle'}
           >
             {content.title}
           </Text>

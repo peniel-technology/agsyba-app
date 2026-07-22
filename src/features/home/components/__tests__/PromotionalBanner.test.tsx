@@ -15,6 +15,10 @@ describe('PromotionalBanner', () => {
 
     fireEvent.press(getByLabelText('Shop Now: Glam Your Daily Look'));
 
+    expect(getByText('Glam Your Daily Look')).toHaveProp(
+      'className',
+      'text-brand-foreground text-3xl font-instrument-serif uppercase leading-9 tracking-wide',
+    );
     expect(getByText('Explore our curated collection of statement pieces')).toBeTruthy();
     expect(onPress).toHaveBeenCalledTimes(1);
   });

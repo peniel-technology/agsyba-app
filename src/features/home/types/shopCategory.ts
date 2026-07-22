@@ -1,6 +1,3 @@
-export interface ShopCategory {
-  id: string;
-  image: number;
-  imageAccessibilityLabel: string;
-  name: string;
-}
+import type { CircularCategoryItem } from '@/types/circularCategory';
+
+export type ShopCategory = CircularCategoryItem;

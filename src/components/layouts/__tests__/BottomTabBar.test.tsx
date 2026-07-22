@@ -21,9 +21,18 @@ describe('BottomTabBar', () => {
     expect(onTabPress).toHaveBeenCalledWith('category');
   });
 
-  it('disables destinations until navigation handlers are provided', () => {
+  it('disables destinations that do not have routes', () => {
     const { getByLabelText } = render(<BottomTabBar activeTab="home" />);
 
+    expect(getByLabelText('Shop tab')).toBeDisabled();
+  });
+
+  it('only enables explicitly available destinations', () => {
+    const { getByLabelText } = render(
+      <BottomTabBar activeTab="home" enabledTabs={['category']} onTabPress={jest.fn()} />,
+    );
+
+    expect(getByLabelText('Category tab')).not.toBeDisabled();
     expect(getByLabelText('Shop tab')).toBeDisabled();
   });
 });

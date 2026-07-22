@@ -1,4 +1,5 @@
 export const gradients = {
+  categoryOffer: ['#C9504B', '#E98359'] as const,
   hero: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.58)'] as const,
   promotionalBanner: ['rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.8)'] as const,
   saleBanner: ['rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 0.9)'] as const,
