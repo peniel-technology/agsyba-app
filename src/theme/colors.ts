@@ -11,6 +11,12 @@ export const colors = {
   brand: '#C9504B',
   brandForeground: '#FFFFFF',
   logoAccent: '#474747',
+  sale: '#DC2626',
+  saleSurface: '#FFF1F2',
+  saleBadge: '#FEE2E2',
+  saleDivider: '#FFE4E6',
+  rating: '#FCD34D',
+  shadow: '#000000',
   success: '#16A34A',
   error: '#DC2626',
 } as const;

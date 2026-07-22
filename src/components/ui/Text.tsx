@@ -9,12 +9,19 @@ interface TextProps extends ComponentProps<typeof NativeText> {
     | 'heading'
     | 'title'
     | 'body'
+    | 'bodyStrong'
     | 'label'
     | 'caption'
     | 'captionMedium'
     | 'captionStrong'
-    | 'micro';
-  tone?: 'default' | 'muted' | 'brand' | 'brandForeground' | 'error';
+    | 'detail'
+    | 'detailMedium'
+    | 'detailStrong'
+    | 'badge'
+    | 'micro'
+    | 'microStrong'
+    | 'overline';
+  tone?: 'default' | 'muted' | 'brand' | 'brandForeground' | 'error' | 'sale' | 'success';
 }
 
 export function Text({ variant = 'body', tone = 'default', className = '', ...props }: TextProps) {
@@ -25,11 +32,18 @@ export function Text({ variant = 'body', tone = 'default', className = '', ...pr
     heading: 'text-3xl font-manrope-bold',
     title: 'text-xl font-manrope-bold',
     body: 'text-base font-manrope',
+    bodyStrong: 'text-base font-manrope-bold',
     label: 'text-sm font-manrope-semibold',
     caption: 'text-xs font-manrope',
     captionMedium: 'text-xs font-manrope-medium',
     captionStrong: 'text-xs font-manrope-bold',
+    detail: 'text-detail font-manrope',
+    detailMedium: 'text-detail font-manrope-medium',
+    detailStrong: 'text-detail font-manrope-bold',
+    badge: 'text-badge font-manrope-bold',
     micro: 'text-micro font-manrope',
+    microStrong: 'text-micro font-manrope-semibold uppercase tracking-wide',
+    overline: 'text-overline font-manrope-extrabold uppercase tracking-wide',
   }[variant];
   const toneClassName = {
     default: 'text-foreground',
@@ -37,6 +51,8 @@ export function Text({ variant = 'body', tone = 'default', className = '', ...pr
     brand: 'text-brand',
     brandForeground: 'text-brand-foreground',
     error: 'text-error',
+    sale: 'text-sale',
+    success: 'text-success',
   }[tone];
 
   return <NativeText className={`${toneClassName} ${variantClassName} ${className}`} {...props} />;

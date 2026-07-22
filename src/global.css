@@ -15,6 +15,10 @@
     --color-primary-foreground: 255 255 255;
     --color-brand: 201 80 75;
     --color-brand-foreground: 255 255 255;
+    --color-sale: 220 38 38;
+    --color-sale-surface: 255 241 242;
+    --color-sale-badge: 254 226 226;
+    --color-sale-divider: 255 228 230;
     --color-success: 22 163 74;
     --color-error: 220 38 38;
   }

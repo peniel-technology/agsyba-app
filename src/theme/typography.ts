@@ -4,6 +4,7 @@ export const typography = {
     medium: 'Manrope_500Medium',
     semibold: 'Manrope_600SemiBold',
     bold: 'Manrope_700Bold',
+    extrabold: 'Manrope_800ExtraBold',
     display: 'InstrumentSerif_400Regular',
   },
   display: { fontSize: 36, lineHeight: 40, fontWeight: '400' as const },
@@ -12,5 +13,8 @@ export const typography = {
   body: { fontSize: 16, lineHeight: 24, fontWeight: '400' as const },
   label: { fontSize: 14, lineHeight: 20, fontWeight: '600' as const },
   caption: { fontSize: 12, lineHeight: 16, fontWeight: '400' as const },
+  detail: { fontSize: 10, lineHeight: 12, fontWeight: '400' as const },
   micro: { fontSize: 9, lineHeight: 12, fontWeight: '400' as const },
+  badge: { fontSize: 8, lineHeight: 10, fontWeight: '700' as const },
+  overline: { fontSize: 10, lineHeight: 12, fontWeight: '800' as const },
 } as const;

@@ -3,5 +3,6 @@ export { gradientLocations, gradients } from '@/theme/gradients';
 export { iconSizes, iconStrokeWidths } from '@/theme/icons';
 export { layout } from '@/theme/layout';
 export { motion } from '@/theme/motion';
+export { shadows } from '@/theme/shadows';
 export { spacing } from '@/theme/spacing';
 export { typography } from '@/theme/typography';
