@@ -25,6 +25,10 @@ void SplashScreen.preventAutoHideAsync();
 
 const homeTabOptions = { title: 'Home' } as const;
 const categoryTabOptions = { title: 'Category' } as const;
+const footwearCollectionTabOptions = { href: null, title: 'Footwear' } as const;
+const kidsCollectionTabOptions = { href: null, title: "Kids' Collection" } as const;
+const mensCollectionTabOptions = { href: null, title: "Men's Collection" } as const;
+const womensCollectionTabOptions = { href: null, title: "Women's Collection" } as const;
 const tabScreenOptions = {
   animation: 'fade',
   freezeOnBlur: true,
@@ -68,6 +72,10 @@ export default function RootLayout() {
           <Tabs tabBar={renderTabBar} screenOptions={tabScreenOptions}>
             <Tabs.Screen name="index" options={homeTabOptions} />
             <Tabs.Screen name="category" options={categoryTabOptions} />
+            <Tabs.Screen name="footwear-collection" options={footwearCollectionTabOptions} />
+            <Tabs.Screen name="kids-collection" options={kidsCollectionTabOptions} />
+            <Tabs.Screen name="mens-collection" options={mensCollectionTabOptions} />
+            <Tabs.Screen name="womens-collection" options={womensCollectionTabOptions} />
           </Tabs>
         </QueryClientProvider>
       </SafeAreaProvider>

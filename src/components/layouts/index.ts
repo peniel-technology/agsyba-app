@@ -1,5 +1,6 @@
 export { AppTabBar } from '@/components/layouts/AppTabBar';
 export { BottomTabBar } from '@/components/layouts/BottomTabBar';
+export { CollectionPageHeader } from '@/components/layouts/CollectionPageHeader';
 export { PageHeader } from '@/components/layouts/PageHeader';
 export { Screen } from '@/components/layouts/Screen';
 export { SidebarDrawer } from '@/components/layouts/SidebarDrawer';

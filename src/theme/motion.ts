@@ -5,6 +5,7 @@ export const motion = {
   imageTransitionMs: 200,
   loaderDotPulseMs: 280,
   loaderDotStaggerMs: 110,
+  pullToRefreshLoaderMs: 650,
   tabIndicatorTransitionMs: 260,
   tabPageLoaderMs: 440,
   tabTransitionMs: 180,

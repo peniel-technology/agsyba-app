@@ -39,4 +39,16 @@ describe('ProductCard', () => {
     expect(onPress).toHaveBeenCalledWith(product);
     expect(onFavoritePress).toHaveBeenCalledWith(product);
   });
+
+  it('omits offer details when a product is not discounted', () => {
+    const fullPriceProduct: ProductPreview = {
+      ...product,
+      bestPrice: product.price,
+      discountPercentage: 0,
+    };
+    const { queryByText } = render(<ProductCard product={fullPriceProduct} />);
+
+    expect(queryByText('0% OFF')).toBeNull();
+    expect(queryByText(/Best Price/)).toBeNull();
+  });
 });

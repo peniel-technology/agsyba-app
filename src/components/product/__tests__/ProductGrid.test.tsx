@@ -35,9 +35,40 @@ describe('ProductGrid', () => {
     expect(onSeeMorePress).toHaveBeenCalledTimes(1);
   });
 
-  it('does not render an empty grid', () => {
-    const { queryByText } = render(<ProductGrid products={[]} title="All Collections" />);
+  it('renders an empty state when no products are available', () => {
+    const { getByText } = render(
+      <ProductGrid products={[]} showHeader={false} title="All Collections" />,
+    );
 
-    expect(queryByText('All Collections')).toBeNull();
+    expect(getByText('No products found')).toBeTruthy();
+    expect(
+      getByText(
+        'There are no products available in this category. Try selecting another category.',
+      ),
+    ).toBeTruthy();
+  });
+
+  it('supports collection-specific empty-state copy', () => {
+    const { getByText } = render(
+      <ProductGrid
+        emptyDescription="Try clearing your filters."
+        emptyTitle="No matching items"
+        products={[]}
+        showHeader={false}
+        title="Filtered Products"
+      />,
+    );
+
+    expect(getByText('No matching items')).toBeTruthy();
+    expect(getByText('Try clearing your filters.')).toBeTruthy();
+  });
+
+  it('can render cards without a section header', () => {
+    const { getByText, queryByText } = render(
+      <ProductGrid products={[product]} showHeader={false} title="Men's Products" />,
+    );
+
+    expect(queryByText("Men's Products")).toBeNull();
+    expect(getByText('Floral Georgette Wrap Dress')).toBeTruthy();
   });
 });

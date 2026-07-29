@@ -31,7 +31,7 @@ export function BrowseCategories({ categories, onCategoryPress }: BrowseCategori
               category={category}
               height={cardHeight}
               key={category.id}
-              onPress={onCategoryPress}
+              onPress={category.href ? onCategoryPress : undefined}
               width={cardWidth}
             />
           ))}

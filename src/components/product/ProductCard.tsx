@@ -32,6 +32,8 @@ export const ProductCard = memo(function ProductCard({
   product,
 }: ProductCardProps) {
   const productAccessibilityLabel = `Open ${product.brand} ${product.name}`;
+  const hasBestPrice = product.bestPrice.amount < product.price.amount;
+  const hasDiscount = product.discountPercentage > 0;
   const cardStyle = useMemo(
     () => (cardWidth === undefined ? styles.card : [styles.card, { width: cardWidth }]),
     [cardWidth],
@@ -61,11 +63,13 @@ export const ProductCard = memo(function ProductCard({
             transition={motion.imageTransitionMs}
           />
 
-          <View className="absolute left-2 top-2 rounded-sm bg-brand px-1.5 py-1">
-            <Text tone="brandForeground" variant="badge">
-              {formatDiscount(product.discountPercentage)}
-            </Text>
-          </View>
+          {hasDiscount ? (
+            <View className="absolute left-2 top-2 rounded-sm bg-brand px-1.5 py-1">
+              <Text tone="brandForeground" variant="badge">
+                {formatDiscount(product.discountPercentage)}
+              </Text>
+            </View>
+          ) : null}
 
           <View className="absolute bottom-2 left-2 flex-row items-center gap-0.5 rounded-full bg-surface px-2 py-1">
             <Text variant="detailStrong">{product.rating.toFixed(1)}</Text>
@@ -93,14 +97,16 @@ export const ProductCard = memo(function ProductCard({
             {formatCurrency(product.price)}
           </Text>
 
-          <Text numberOfLines={1} variant="micro">
-            <Text tone="success" variant="micro">
-              Best Price {formatCurrency(product.bestPrice)}{' '}
+          {hasBestPrice ? (
+            <Text numberOfLines={1} variant="micro">
+              <Text tone="success" variant="micro">
+                Best Price {formatCurrency(product.bestPrice)}{' '}
+              </Text>
+              <Text tone="muted" variant="micro">
+                with coupon
+              </Text>
             </Text>
-            <Text tone="muted" variant="micro">
-              with coupon
-            </Text>
-          </Text>
+          ) : null}
 
           <Text numberOfLines={1} tone="muted" variant="detailMedium">
             {product.deliveryLabel}

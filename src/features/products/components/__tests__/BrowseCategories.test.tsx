@@ -8,6 +8,7 @@ jest.mock('expo-linear-gradient', () => ({ LinearGradient: 'LinearGradient' }));
 jest.mock('lucide-react-native', () => ({ ChevronRight: 'ChevronRight' }));
 
 const category: BrowseCategory = {
+  href: '/mens-collection',
   id: 'footwear',
   image: 1,
   imageAccessibilityLabel: 'Brown leather boots',
@@ -32,5 +33,17 @@ describe('BrowseCategories', () => {
     const { getByText } = render(<BrowseCategories categories={[]} />);
 
     expect(getByText('No categories found')).toBeTruthy();
+  });
+
+  it('keeps categories without a destination disabled', () => {
+    const categoryWithoutDestination: BrowseCategory = {
+      ...category,
+      href: undefined,
+    };
+    const { getByLabelText } = render(
+      <BrowseCategories categories={[categoryWithoutDestination]} onCategoryPress={jest.fn()} />,
+    );
+
+    expect(getByLabelText('Browse Footwear Collection')).toBeDisabled();
   });
 });

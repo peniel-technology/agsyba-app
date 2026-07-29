@@ -1,3 +1,5 @@
+import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { SearchForm } from '@/components/forms/SearchForm';
@@ -8,15 +10,25 @@ import { TrendingNow } from '@/features/products/components/TrendingNow';
 import { browseCategories } from '@/features/products/constants/browseCategories';
 import { trendingCategories } from '@/features/products/constants/trendingCategories';
 import { useCategorySearch } from '@/features/products/hooks/useCategorySearch';
+import type { BrowseCategory } from '@/features/products/types/browseCategory';
 import { useTabPageLoader } from '@/hooks/useTabPageLoader';
 import { useUiStore } from '@/stores/useUiStore';
 
 export default function CategoryScreen() {
+  const router = useRouter();
   const closeDrawer = useUiStore((state) => state.closeDrawer);
   const isDrawerOpen = useUiStore((state) => state.isDrawerOpen);
   const openDrawer = useUiStore((state) => state.openDrawer);
   const { filteredCategories, setQuery } = useCategorySearch(browseCategories);
   const isPageLoading = useTabPageLoader();
+  const handleCategoryPress = useCallback(
+    (category: BrowseCategory) => {
+      if (category.href) {
+        router.push(category.href);
+      }
+    },
+    [router],
+  );
 
   return (
     <Screen includeBottomInset={false} padded={false}>
@@ -32,7 +44,10 @@ export default function CategoryScreen() {
             <SearchForm onQueryChange={setQuery} />
           </View>
           <View className="mt-8">
-            <BrowseCategories categories={filteredCategories} />
+            <BrowseCategories
+              categories={filteredCategories}
+              onCategoryPress={handleCategoryPress}
+            />
           </View>
           <View className="mt-8">
             <TrendingNow categories={trendingCategories} />
