@@ -6,6 +6,8 @@ export const layout = {
   categoryGridTabletColumns: 4,
   productCardImageHeight: 190,
   productCardWidth: 192,
+  productDetailGalleryHeight: 420,
+  productDetailThumbnailSize: 64,
   productGridMinimumColumns: 2,
   promotionalBannerHeight: 176,
   drawerPromotionImageHeight: 90,

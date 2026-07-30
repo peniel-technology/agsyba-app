@@ -8,6 +8,7 @@ import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
 interface ProductSliderProps {
+  onAddToCartPress?: (product: ProductPreview) => void;
   onFavoritePress?: (product: ProductPreview) => void;
   onProductPress?: (product: ProductPreview) => void;
   onSeeMorePress?: () => void;
@@ -31,6 +32,7 @@ function getProductLayout(_data: ArrayLike<ProductPreview> | null | undefined, i
 }
 
 export function ProductSlider({
+  onAddToCartPress,
   onFavoritePress,
   onProductPress,
   onSeeMorePress,
@@ -40,9 +42,14 @@ export function ProductSlider({
 }: ProductSliderProps) {
   const renderProduct = useCallback<ListRenderItem<ProductPreview>>(
     ({ item }) => (
-      <ProductCard onFavoritePress={onFavoritePress} onPress={onProductPress} product={item} />
+      <ProductCard
+        onAddToCartPress={onAddToCartPress}
+        onFavoritePress={onFavoritePress}
+        onPress={onProductPress}
+        product={item}
+      />
     ),
-    [onFavoritePress, onProductPress],
+    [onAddToCartPress, onFavoritePress, onProductPress],
   );
 
   if (products.length === 0) {

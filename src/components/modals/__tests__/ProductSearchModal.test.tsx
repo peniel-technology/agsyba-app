@@ -7,6 +7,7 @@ jest.mock('expo-image', () => ({ Image: 'ExpoImage' }));
 jest.mock('lucide-react-native', () => ({
   Heart: 'Heart',
   Search: 'Search',
+  ShoppingBag: 'ShoppingBag',
   Star: 'Star',
   X: 'X',
 }));
@@ -63,5 +64,21 @@ describe('ProductSearchModal', () => {
     fireEvent.press(getByLabelText('Close search'));
 
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens a selected product from the search results', () => {
+    const onProductPress = jest.fn();
+    const { getByLabelText } = render(
+      <ProductSearchModal
+        isVisible
+        onClose={jest.fn()}
+        onProductPress={onProductPress}
+        products={products}
+      />,
+    );
+
+    fireEvent.press(getByLabelText('Open ZARA Premium Linen Shirt'));
+
+    expect(onProductPress).toHaveBeenCalledWith(products[0]);
   });
 });

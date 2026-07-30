@@ -161,4 +161,31 @@ describe('AppTabBar', () => {
     expect(getByLabelText('Category tab')).toHaveAccessibilityState({ selected: true });
     expect(getByLabelText('Home tab')).toHaveAccessibilityState({ selected: false });
   });
+
+  it('keeps the home tab selected on the product detail route', () => {
+    mockUsePathname.mockReturnValue('/product-detail');
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit: jest.fn(), navigate: jest.fn() },
+      state: {
+        history: [],
+        index: 2,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'product-detail'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'product-detail-key', name: 'product-detail', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { getByLabelText } = render(<AppTabBar {...props} />);
+
+    expect(getByLabelText('Home tab')).toHaveAccessibilityState({ selected: true });
+    expect(getByLabelText('Category tab')).toHaveAccessibilityState({ selected: false });
+  });
 });

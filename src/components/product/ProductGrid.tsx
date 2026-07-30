@@ -9,6 +9,7 @@ import type { ProductPreview } from '@/types/product';
 interface ProductGridProps {
   emptyDescription?: string;
   emptyTitle?: string;
+  onAddToCartPress?: (product: ProductPreview) => void;
   onFavoritePress?: (product: ProductPreview) => void;
   onProductPress?: (product: ProductPreview) => void;
   onSeeMorePress?: () => void;
@@ -21,6 +22,7 @@ interface ProductGridProps {
 export function ProductGrid({
   emptyDescription = 'There are no products available in this category. Try selecting another category.',
   emptyTitle = 'No products found',
+  onAddToCartPress,
   onFavoritePress,
   onProductPress,
   onSeeMorePress,
@@ -52,6 +54,7 @@ export function ProductGrid({
             <ProductCard
               cardWidth={cardWidth}
               key={product.id}
+              onAddToCartPress={onAddToCartPress}
               onFavoritePress={onFavoritePress}
               onPress={onProductPress}
               product={product}

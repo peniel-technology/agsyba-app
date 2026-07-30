@@ -5,6 +5,7 @@ import { Text } from '@/components/ui/Text';
 import { colors, iconSizes, iconStrokeWidths, spacing } from '@/theme';
 
 interface CollectionPageHeaderProps {
+  cartItemCount?: number;
   onBackPress: () => void;
   onCartPress?: () => void;
   onSearchPress: () => void;
@@ -12,11 +13,18 @@ interface CollectionPageHeaderProps {
 }
 
 export function CollectionPageHeader({
+  cartItemCount = 0,
   onBackPress,
   onCartPress,
   onSearchPress,
   title,
 }: CollectionPageHeaderProps) {
+  const visibleCartItemCount = Math.max(0, cartItemCount);
+  const cartAccessibilityLabel =
+    visibleCartItemCount > 0
+      ? `Shopping bag, ${visibleCartItemCount} items`
+      : 'Shopping bag, empty';
+
   return (
     <View
       accessibilityRole="header"
@@ -58,22 +66,38 @@ export function CollectionPageHeader({
             strokeWidth={iconStrokeWidths.regular}
           />
         </Pressable>
-        <Pressable
-          accessibilityLabel="Shopping bag"
-          accessibilityRole="button"
-          accessibilityState={{ disabled: !onCartPress }}
-          className="size-10 items-center justify-center rounded-full active:bg-subtle-surface"
-          disabled={!onCartPress}
-          hitSlop={spacing[1]}
-          onPress={onCartPress}
-        >
-          <ShoppingBag
-            accessible={false}
-            color={colors.text}
-            size={iconSizes.medium}
-            strokeWidth={iconStrokeWidths.regular}
-          />
-        </Pressable>
+        <View className="relative">
+          <Pressable
+            accessibilityLabel={cartAccessibilityLabel}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !onCartPress }}
+            className="size-10 items-center justify-center rounded-full active:bg-subtle-surface"
+            disabled={!onCartPress}
+            hitSlop={spacing[1]}
+            onPress={onCartPress}
+          >
+            <ShoppingBag
+              accessible={false}
+              color={colors.text}
+              size={iconSizes.medium}
+              strokeWidth={iconStrokeWidths.regular}
+            />
+          </Pressable>
+          {visibleCartItemCount > 0 ? (
+            <View
+              className="absolute right-0 top-0 min-w-4 items-center justify-center rounded-full bg-brand px-1"
+              pointerEvents="none"
+            >
+              <Text
+                className="text-center leading-4"
+                tone="brandForeground"
+                variant="captionMedium"
+              >
+                {visibleCartItemCount > 99 ? '99+' : visibleCartItemCount}
+              </Text>
+            </View>
+          ) : null}
+        </View>
       </View>
     </View>
   );

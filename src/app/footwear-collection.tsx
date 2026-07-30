@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { Alert, RefreshControl, ScrollView, View } from 'react-native';
 
 import { CollectionPageHeader, Screen } from '@/components/layouts';
 import { CollectionRefreshLoader } from '@/components/loaders/CollectionRefreshLoader';
@@ -22,11 +22,14 @@ import {
 } from '@/features/products/constants/footwearCollectionProducts';
 import { footwearTrendingCategories } from '@/features/products/constants/footwearTrendingCategories';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { useCartStore } from '@/stores/useCartStore';
 import { colors } from '@/theme';
 
 export default function FootwearCollectionScreen() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const addCartItem = useCartStore((state) => state.addItem);
+  const cartItemCount = useCartStore((state) => state.itemCount);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<FootwearCollectionCategory>('All');
   const closeSearch = useCallback(() => {
@@ -38,6 +41,13 @@ export default function FootwearCollectionScreen() {
   const openSearch = useCallback(() => {
     setIsSearchVisible(true);
   }, []);
+  const openProductDetail = useCallback(() => {
+    closeSearch();
+    router.push(routes.productDetail);
+  }, [closeSearch, router]);
+  const openCart = useCallback(() => {
+    Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
+  }, [cartItemCount]);
   const refreshCollection = useCallback(async () => {
     setSelectedCategory('All');
     await queryClient.refetchQueries({ type: 'active' });
@@ -56,7 +66,9 @@ export default function FootwearCollectionScreen() {
   return (
     <Screen includeBottomInset={false} padded={false}>
       <CollectionPageHeader
+        cartItemCount={cartItemCount}
         onBackPress={handleBackPress}
+        onCartPress={openCart}
         onSearchPress={openSearch}
         title="Footwear"
       />
@@ -84,7 +96,13 @@ export default function FootwearCollectionScreen() {
             />
           </View>
           <View className="mt-1">
-            <ProductGrid products={visibleProducts} showHeader={false} title="Footwear Products" />
+            <ProductGrid
+              onAddToCartPress={addCartItem}
+              onProductPress={openProductDetail}
+              products={visibleProducts}
+              showHeader={false}
+              title="Footwear Products"
+            />
           </View>
           <View className="mt-8 bg-surface pt-2">
             <ProductResultsLoader
@@ -100,7 +118,9 @@ export default function FootwearCollectionScreen() {
       </View>
       <ProductSearchModal
         isVisible={isSearchVisible}
+        onAddToCartPress={addCartItem}
         onClose={closeSearch}
+        onProductPress={openProductDetail}
         products={footwearCollectionProducts}
       />
     </Screen>

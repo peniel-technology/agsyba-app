@@ -3,6 +3,7 @@ import { Heart, Star } from 'lucide-react-native';
 import { memo, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { ProductAddToCartButton } from '@/components/product/ProductAddToCartButton';
 import { Text } from '@/components/ui/Text';
 import { colors, iconSizes, iconStrokeWidths, layout, motion, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
@@ -10,6 +11,7 @@ import { formatCurrency } from '@/utils/formatCurrency';
 
 interface ProductCardProps {
   cardWidth?: number;
+  onAddToCartPress?: (product: ProductPreview) => void;
   onFavoritePress?: (product: ProductPreview) => void;
   onPress?: (product: ProductPreview) => void;
   product: ProductPreview;
@@ -27,6 +29,7 @@ const styles = StyleSheet.create({
 
 export const ProductCard = memo(function ProductCard({
   cardWidth,
+  onAddToCartPress,
   onFavoritePress,
   onPress,
   product,
@@ -55,7 +58,6 @@ export const ProductCard = memo(function ProductCard({
         <View className="relative" style={styles.imageContainer}>
           <Image
             accessibilityLabel={product.imageAccessibilityLabel}
-            accessible
             className="bg-surface"
             contentFit={product.imageFit ?? 'contain'}
             source={product.image}
@@ -97,22 +99,32 @@ export const ProductCard = memo(function ProductCard({
             {formatCurrency(product.price)}
           </Text>
 
-          {hasBestPrice ? (
-            <Text numberOfLines={1} variant="micro">
-              <Text tone="success" variant="micro">
-                Best Price {formatCurrency(product.bestPrice)}{' '}
+          <View className="h-4 justify-center">
+            {hasBestPrice ? (
+              <Text numberOfLines={1} variant="micro">
+                <Text tone="success" variant="micro">
+                  Best Price {formatCurrency(product.bestPrice)}{' '}
+                </Text>
+                <Text tone="muted" variant="micro">
+                  with coupon
+                </Text>
               </Text>
-              <Text tone="muted" variant="micro">
-                with coupon
-              </Text>
-            </Text>
-          ) : null}
+            ) : null}
+          </View>
 
           <Text numberOfLines={1} tone="muted" variant="detailMedium">
             {product.deliveryLabel}
           </Text>
         </View>
       </Pressable>
+
+      <View className="px-2.5 pb-2.5">
+        <ProductAddToCartButton
+          accessibilityLabel={`Add ${product.name} to cart`}
+          disabled={!onAddToCartPress}
+          onPress={onAddToCartPress ? () => onAddToCartPress(product) : undefined}
+        />
+      </View>
 
       <Pressable
         accessibilityLabel={`${product.isFavorite ? 'Remove' : 'Add'} ${product.name} ${

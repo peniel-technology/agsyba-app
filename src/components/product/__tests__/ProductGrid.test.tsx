@@ -4,7 +4,11 @@ import { ProductGrid } from '@/components/product/ProductGrid';
 import type { ProductPreview } from '@/types/product';
 
 jest.mock('expo-image', () => ({ Image: 'ExpoImage' }));
-jest.mock('lucide-react-native', () => ({ Heart: 'Heart', Star: 'Star' }));
+jest.mock('lucide-react-native', () => ({
+  Heart: 'Heart',
+  ShoppingBag: 'ShoppingBag',
+  Star: 'Star',
+}));
 
 const product: ProductPreview = {
   bestPrice: { amount: 62, currency: 'AED' },
@@ -23,16 +27,25 @@ const product: ProductPreview = {
 
 describe('ProductGrid', () => {
   it('renders products and invokes the see more action', () => {
+    const onAddToCartPress = jest.fn();
     const onSeeMorePress = jest.fn();
     const { getByLabelText, getByText } = render(
-      <ProductGrid onSeeMorePress={onSeeMorePress} products={[product]} title="All Collections" />,
+      <ProductGrid
+        onAddToCartPress={onAddToCartPress}
+        onSeeMorePress={onSeeMorePress}
+        products={[product]}
+        title="All Collections"
+      />,
     );
 
+    fireEvent.press(getByLabelText('Add Floral Georgette Wrap Dress to cart'));
     fireEvent.press(getByLabelText('See More All Collections'));
 
+    expect(getByText('Add to Cart')).toBeTruthy();
     expect(getByText('All Collections')).toBeTruthy();
     expect(getByText('Floral Georgette Wrap Dress')).toBeTruthy();
     expect(onSeeMorePress).toHaveBeenCalledTimes(1);
+    expect(onAddToCartPress).toHaveBeenCalledWith(product);
   });
 
   it('renders an empty state when no products are available', () => {

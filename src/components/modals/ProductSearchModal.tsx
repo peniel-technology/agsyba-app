@@ -12,11 +12,19 @@ import type { ProductPreview } from '@/types/product';
 
 interface ProductSearchModalProps {
   isVisible: boolean;
+  onAddToCartPress?: (product: ProductPreview) => void;
   onClose: () => void;
+  onProductPress?: (product: ProductPreview) => void;
   products: readonly ProductPreview[];
 }
 
-export function ProductSearchModal({ isVisible, onClose, products }: ProductSearchModalProps) {
+export function ProductSearchModal({
+  isVisible,
+  onAddToCartPress,
+  onClose,
+  onProductPress,
+  products,
+}: ProductSearchModalProps) {
   const [query, setQuery] = useState('');
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const filteredProducts = useMemo(
@@ -78,7 +86,13 @@ export function ProductSearchModal({ isVisible, onClose, products }: ProductSear
           keyboardShouldPersistTaps="handled"
         >
           {filteredProducts.length > 0 ? (
-            <ProductGrid products={filteredProducts} showHeader={false} title="Search Results" />
+            <ProductGrid
+              onAddToCartPress={onAddToCartPress}
+              onProductPress={onProductPress}
+              products={filteredProducts}
+              showHeader={false}
+              title="Search Results"
+            />
           ) : (
             <View className="px-4 py-8">
               <EmptyState

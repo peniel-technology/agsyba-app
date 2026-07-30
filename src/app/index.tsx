@@ -1,10 +1,12 @@
+import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
 import { Screen, SidebarDrawer, TabPageContent, TopNavbar } from '@/components/layouts';
 import { ProductSearchModal } from '@/components/modals/ProductSearchModal';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductSlider } from '@/components/product/ProductSlider';
+import { routes } from '@/constants/routes';
 import { FlashSaleBanner } from '@/features/home/components/FlashSaleBanner';
 import { HeroCarousel } from '@/features/home/components/HeroCarousel';
 import { PromotionalBanner } from '@/features/home/components/PromotionalBanner';
@@ -24,12 +26,16 @@ import { shopCategories } from '@/features/home/constants/shopCategories';
 import { shoppingBenefits } from '@/features/home/constants/shoppingBenefits';
 import { styleCategories } from '@/features/home/constants/styleCategories';
 import { trendingFootwear } from '@/features/home/constants/trendingFootwear';
-import { useUiStore } from '@/stores/useUiStore';
 import { useTabPageLoader } from '@/hooks/useTabPageLoader';
+import { useCartStore } from '@/stores/useCartStore';
+import { useUiStore } from '@/stores/useUiStore';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const closeDrawer = useUiStore((state) => state.closeDrawer);
+  const addCartItem = useCartStore((state) => state.addItem);
+  const cartItemCount = useCartStore((state) => state.itemCount);
   const isDrawerOpen = useUiStore((state) => state.isDrawerOpen);
   const openDrawer = useUiStore((state) => state.openDrawer);
   const isPageLoading = useTabPageLoader();
@@ -39,10 +45,22 @@ export default function HomeScreen() {
   const openSearch = useCallback(() => {
     setIsSearchVisible(true);
   }, []);
+  const openProductDetail = useCallback(() => {
+    closeSearch();
+    router.push(routes.productDetail);
+  }, [closeSearch, router]);
+  const openCart = useCallback(() => {
+    Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
+  }, [cartItemCount]);
 
   return (
     <Screen includeBottomInset={false} padded={false}>
-      <TopNavbar onMenuPress={openDrawer} onSearchPress={openSearch} />
+      <TopNavbar
+        cartItemCount={cartItemCount}
+        onCartPress={openCart}
+        onMenuPress={openDrawer}
+        onSearchPress={openSearch}
+      />
       <TabPageContent isLoading={isPageLoading} loadingLabel="Loading home page">
         <ScrollView className="flex-1" contentContainerClassName="py-4">
           <HeroCarousel slides={heroSlides} />
@@ -56,22 +74,42 @@ export default function HomeScreen() {
             <FlashSaleBanner sale={flashSale} />
           </View>
           <View className="mt-8">
-            <ProductSlider products={newArrivals} title="New Arrivals" />
+            <ProductSlider
+              onAddToCartPress={addCartItem}
+              onProductPress={openProductDetail}
+              products={newArrivals}
+              title="New Arrivals"
+            />
           </View>
           <View className="mt-8">
-            <ProductSlider products={mostPopularProducts} title="Most Popular Products" />
+            <ProductSlider
+              onAddToCartPress={addCartItem}
+              onProductPress={openProductDetail}
+              products={mostPopularProducts}
+              title="Most Popular Products"
+            />
           </View>
           <View className="mt-8">
             <PromotionalBanner content={promotionBanner} />
           </View>
           <View className="mt-8">
-            <ProductSlider products={trendingFootwear} title="Trending Footwear" />
+            <ProductSlider
+              onAddToCartPress={addCartItem}
+              onProductPress={openProductDetail}
+              products={trendingFootwear}
+              title="Trending Footwear"
+            />
           </View>
           <View className="mt-8">
             <ShopByStyle categories={styleCategories} />
           </View>
           <View className="mt-8">
-            <ProductGrid products={allCollections} title="All Collections" />
+            <ProductGrid
+              onAddToCartPress={addCartItem}
+              onProductPress={openProductDetail}
+              products={allCollections}
+              title="All Collections"
+            />
           </View>
           <View className="mt-8">
             <SaleBanner content={salePromotionBanner} />
@@ -81,7 +119,9 @@ export default function HomeScreen() {
       <SidebarDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
       <ProductSearchModal
         isVisible={isSearchVisible}
+        onAddToCartPress={addCartItem}
         onClose={closeSearch}
+        onProductPress={openProductDetail}
         products={homeSearchProducts}
       />
     </Screen>

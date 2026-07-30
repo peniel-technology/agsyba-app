@@ -4,7 +4,11 @@ import { ProductCard } from '@/components/product/ProductCard';
 import type { ProductPreview } from '@/types/product';
 
 jest.mock('expo-image', () => ({ Image: 'ExpoImage' }));
-jest.mock('lucide-react-native', () => ({ Heart: 'Heart', Star: 'Star' }));
+jest.mock('lucide-react-native', () => ({
+  Heart: 'Heart',
+  ShoppingBag: 'ShoppingBag',
+  Star: 'Star',
+}));
 
 const product: ProductPreview = {
   bestPrice: { amount: 76, currency: 'AED' },
@@ -24,19 +28,28 @@ const product: ProductPreview = {
 describe('ProductCard', () => {
   it('renders product details and invokes product actions', () => {
     const onFavoritePress = jest.fn();
+    const onAddToCartPress = jest.fn();
     const onPress = jest.fn();
     const { getByLabelText, getByText, queryByText } = render(
-      <ProductCard onFavoritePress={onFavoritePress} onPress={onPress} product={product} />,
+      <ProductCard
+        onAddToCartPress={onAddToCartPress}
+        onFavoritePress={onFavoritePress}
+        onPress={onPress}
+        product={product}
+      />,
     );
 
     fireEvent.press(getByLabelText('Open ZARA Pleated Chiffon Midi Dress'));
+    fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to cart'));
     fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to wishlist'));
 
+    expect(getByText('Add to Cart')).toBeTruthy();
     expect(getByText('20% OFF')).toBeTruthy();
     expect(getByText('AED 45.00')).toBeTruthy();
     expect(getByText('4.2')).toBeTruthy();
     expect(queryByText('128')).toBeNull();
     expect(onPress).toHaveBeenCalledWith(product);
+    expect(onAddToCartPress).toHaveBeenCalledWith(product);
     expect(onFavoritePress).toHaveBeenCalledWith(product);
   });
 

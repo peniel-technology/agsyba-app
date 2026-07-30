@@ -26,6 +26,24 @@ describe('CollectionPageHeader', () => {
     expect(getByText("Men's Collection")).toBeTruthy();
     expect(onBackPress).toHaveBeenCalledTimes(1);
     expect(onSearchPress).toHaveBeenCalledTimes(1);
-    expect(getByLabelText('Shopping bag')).toBeDisabled();
+    expect(getByLabelText('Shopping bag, empty')).toBeDisabled();
+  });
+
+  it('renders the cart count and invokes the cart action', () => {
+    const onCartPress = jest.fn();
+    const { getByLabelText, getByText } = render(
+      <CollectionPageHeader
+        cartItemCount={3}
+        onBackPress={jest.fn()}
+        onCartPress={onCartPress}
+        onSearchPress={jest.fn()}
+        title="Women's Collection"
+      />,
+    );
+
+    fireEvent.press(getByLabelText('Shopping bag, 3 items'));
+
+    expect(getByText('3')).toBeTruthy();
+    expect(onCartPress).toHaveBeenCalledTimes(1);
   });
 });
