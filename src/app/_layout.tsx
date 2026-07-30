@@ -29,6 +29,7 @@ const footwearCollectionTabOptions = { href: null, title: 'Footwear' } as const;
 const kidsCollectionTabOptions = { href: null, title: "Kids' Collection" } as const;
 const mensCollectionTabOptions = { href: null, title: "Men's Collection" } as const;
 const productDetailTabOptions = { href: null, title: 'Product Details' } as const;
+const productFiltersTabOptions = { href: null, title: 'Filters' } as const;
 const womensCollectionTabOptions = { href: null, title: "Women's Collection" } as const;
 const tabScreenOptions = {
   animation: 'fade',
@@ -77,6 +78,7 @@ export default function RootLayout() {
             <Tabs.Screen name="kids-collection" options={kidsCollectionTabOptions} />
             <Tabs.Screen name="mens-collection" options={mensCollectionTabOptions} />
             <Tabs.Screen name="product-detail" options={productDetailTabOptions} />
+            <Tabs.Screen name="product-filters" options={productFiltersTabOptions} />
             <Tabs.Screen name="womens-collection" options={womensCollectionTabOptions} />
           </Tabs>
         </QueryClientProvider>

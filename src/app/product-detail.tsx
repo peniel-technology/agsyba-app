@@ -105,7 +105,7 @@ export default function ProductDetailScreen() {
         onBackPress={handleBackPress}
         onCartPress={openBag}
         onSearchPress={openSearch}
-        title="Footwear"
+        title={blushFloralWrapMidiDress.collectionTitle}
       />
 
       <ScrollView

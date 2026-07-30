@@ -23,6 +23,7 @@ import {
 import { womensTrendingCategories } from '@/features/products/constants/womensTrendingCategories';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useCartStore } from '@/stores/useCartStore';
+import { useProductFilterStore } from '@/stores/useProductFilterStore';
 import { colors } from '@/theme';
 
 export default function WomensCollectionScreen() {
@@ -30,6 +31,7 @@ export default function WomensCollectionScreen() {
   const router = useRouter();
   const addCartItem = useCartStore((state) => state.addItem);
   const cartItemCount = useCartStore((state) => state.itemCount);
+  const beginEditingFilters = useProductFilterStore((state) => state.beginEditing);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<WomensCollectionCategory>('All');
   const closeSearch = useCallback(() => {
@@ -48,6 +50,13 @@ export default function WomensCollectionScreen() {
   const openCart = useCallback(() => {
     Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
   }, [cartItemCount]);
+  const openFilters = useCallback(() => {
+    beginEditingFilters();
+    router.push({
+      params: { returnTo: routes.womensCollection },
+      pathname: routes.productFilters,
+    });
+  }, [beginEditingFilters, router]);
   const refreshCollection = useCallback(async () => {
     setSelectedCategory('All');
     await queryClient.refetchQueries({ type: 'active' });
@@ -92,6 +101,7 @@ export default function WomensCollectionScreen() {
             <CollectionFilters
               categories={womensCollectionCategories}
               onCategoryChange={setSelectedCategory}
+              onFilterPress={openFilters}
               selectedCategory={selectedCategory}
             />
           </View>

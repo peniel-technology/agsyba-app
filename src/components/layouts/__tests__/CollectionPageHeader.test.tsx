@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/react-native';
 import { CollectionPageHeader } from '@/components/layouts/CollectionPageHeader';
 
 jest.mock('lucide-react-native', () => ({
-  ArrowLeft: 'ArrowLeft',
+  ChevronLeft: 'ChevronLeft',
   Search: 'Search',
   ShoppingBag: 'ShoppingBag',
 }));

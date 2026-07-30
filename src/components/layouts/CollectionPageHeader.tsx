@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, ShoppingBag } from 'lucide-react-native';
+import { ChevronLeft, Search, ShoppingBag } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
@@ -38,7 +38,7 @@ export function CollectionPageHeader({
           hitSlop={spacing[1]}
           onPress={onBackPress}
         >
-          <ArrowLeft
+          <ChevronLeft
             accessible={false}
             color={colors.text}
             size={iconSizes.large}

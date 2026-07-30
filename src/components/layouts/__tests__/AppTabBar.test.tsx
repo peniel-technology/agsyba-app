@@ -188,4 +188,31 @@ describe('AppTabBar', () => {
     expect(getByLabelText('Home tab')).toHaveAccessibilityState({ selected: true });
     expect(getByLabelText('Category tab')).toHaveAccessibilityState({ selected: false });
   });
+
+  it('hides the app tab bar on the product filter route', () => {
+    mockUsePathname.mockReturnValue('/product-filters');
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit: jest.fn(), navigate: jest.fn() },
+      state: {
+        history: [],
+        index: 2,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'product-filters'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'product-filters-key', name: 'product-filters', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { queryByLabelText } = render(<AppTabBar {...props} />);
+
+    expect(queryByLabelText('Home tab')).toBeNull();
+    expect(queryByLabelText('Category tab')).toBeNull();
+  });
 });

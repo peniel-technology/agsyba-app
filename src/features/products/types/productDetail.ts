@@ -64,6 +64,7 @@ export interface ProductSpecification {
 
 export interface ProductDetail {
   brand: string;
+  collectionTitle: string;
   colors: readonly ProductColorOption[];
   discountPercentage: number;
   estimatedDelivery: string;

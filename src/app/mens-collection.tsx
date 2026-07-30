@@ -20,6 +20,7 @@ import {
 import { mensTrendingCategories } from '@/features/products/constants/mensTrendingCategories';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useCartStore } from '@/stores/useCartStore';
+import { useProductFilterStore } from '@/stores/useProductFilterStore';
 import { colors } from '@/theme';
 
 export default function MensCollectionScreen() {
@@ -27,6 +28,7 @@ export default function MensCollectionScreen() {
   const router = useRouter();
   const addCartItem = useCartStore((state) => state.addItem);
   const cartItemCount = useCartStore((state) => state.itemCount);
+  const beginEditingFilters = useProductFilterStore((state) => state.beginEditing);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<MensCollectionCategory>('All');
   const closeSearch = useCallback(() => {
@@ -45,6 +47,13 @@ export default function MensCollectionScreen() {
   const openCart = useCallback(() => {
     Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
   }, [cartItemCount]);
+  const openFilters = useCallback(() => {
+    beginEditingFilters();
+    router.push({
+      params: { returnTo: routes.mensCollection },
+      pathname: routes.productFilters,
+    });
+  }, [beginEditingFilters, router]);
   const refreshCollection = useCallback(async () => {
     setSelectedCategory('All');
     await queryClient.refetchQueries({ type: 'active' });
@@ -88,6 +97,7 @@ export default function MensCollectionScreen() {
           <View className="mt-6">
             <MensCollectionFilters
               onCategoryChange={setSelectedCategory}
+              onFilterPress={openFilters}
               selectedCategory={selectedCategory}
             />
           </View>

@@ -9,6 +9,7 @@ import type { ProductPreview } from '@/types/product';
 
 export const blushFloralWrapMidiDress = {
   brand: 'AGSYBA',
+  collectionTitle: "Women's Collection",
   colors: [
     { id: 'beige', label: 'Beige', swatchClassName: 'bg-stone-300' },
     { id: 'black', label: 'Black', swatchClassName: 'bg-stone-900' },

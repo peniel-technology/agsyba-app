@@ -5,5 +5,6 @@ export const routes = {
   kidsCollection: '/kids-collection',
   mensCollection: '/mens-collection',
   productDetail: '/product-detail',
+  productFilters: '/product-filters',
   womensCollection: '/womens-collection',
 } as const;

@@ -23,6 +23,7 @@ import {
 import { footwearTrendingCategories } from '@/features/products/constants/footwearTrendingCategories';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useCartStore } from '@/stores/useCartStore';
+import { useProductFilterStore } from '@/stores/useProductFilterStore';
 import { colors } from '@/theme';
 
 export default function FootwearCollectionScreen() {
@@ -30,6 +31,7 @@ export default function FootwearCollectionScreen() {
   const router = useRouter();
   const addCartItem = useCartStore((state) => state.addItem);
   const cartItemCount = useCartStore((state) => state.itemCount);
+  const beginEditingFilters = useProductFilterStore((state) => state.beginEditing);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<FootwearCollectionCategory>('All');
   const closeSearch = useCallback(() => {
@@ -48,6 +50,13 @@ export default function FootwearCollectionScreen() {
   const openCart = useCallback(() => {
     Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
   }, [cartItemCount]);
+  const openFilters = useCallback(() => {
+    beginEditingFilters();
+    router.push({
+      params: { returnTo: routes.footwearCollection },
+      pathname: routes.productFilters,
+    });
+  }, [beginEditingFilters, router]);
   const refreshCollection = useCallback(async () => {
     setSelectedCategory('All');
     await queryClient.refetchQueries({ type: 'active' });
@@ -92,6 +101,7 @@ export default function FootwearCollectionScreen() {
             <CollectionFilters
               categories={footwearCollectionCategories}
               onCategoryChange={setSelectedCategory}
+              onFilterPress={openFilters}
               selectedCategory={selectedCategory}
             />
           </View>

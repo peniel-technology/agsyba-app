@@ -28,6 +28,11 @@ function isCategoryPath(pathname: string): boolean {
 
 export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
   const pathname = usePathname();
+
+  if (pathname === routes.productFilters) {
+    return null;
+  }
+
   const activeTab: BottomTabId = isCategoryPath(pathname) ? 'category' : 'home';
   const handleTabPress = (tab: BottomTabId) => {
     if (tab !== 'home' && tab !== 'category') {
