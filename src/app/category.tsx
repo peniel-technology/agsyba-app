@@ -4,6 +4,7 @@ import { ScrollView, View } from 'react-native';
 
 import { SearchForm } from '@/components/forms/SearchForm';
 import { Screen, SidebarDrawer, TabPageContent, TopNavbar } from '@/components/layouts';
+import { routes } from '@/constants/routes';
 import { BrowseCategories } from '@/features/products/components/BrowseCategories';
 import { CategoryOfferBanner } from '@/features/products/components/CategoryOfferBanner';
 import { TrendingNow } from '@/features/products/components/TrendingNow';
@@ -12,15 +13,20 @@ import { trendingCategories } from '@/features/products/constants/trendingCatego
 import { useCategorySearch } from '@/features/products/hooks/useCategorySearch';
 import type { BrowseCategory } from '@/features/products/types/browseCategory';
 import { useTabPageLoader } from '@/hooks/useTabPageLoader';
+import { useCartStore } from '@/stores/useCartStore';
 import { useUiStore } from '@/stores/useUiStore';
 
 export default function CategoryScreen() {
   const router = useRouter();
+  const cartItemCount = useCartStore((state) => state.itemCount);
   const closeDrawer = useUiStore((state) => state.closeDrawer);
   const isDrawerOpen = useUiStore((state) => state.isDrawerOpen);
   const openDrawer = useUiStore((state) => state.openDrawer);
   const { filteredCategories, setQuery } = useCategorySearch(browseCategories);
   const isPageLoading = useTabPageLoader();
+  const openCart = useCallback(() => {
+    router.push(routes.shoppingBag);
+  }, [router]);
   const handleCategoryPress = useCallback(
     (category: BrowseCategory) => {
       if (category.href) {
@@ -32,7 +38,7 @@ export default function CategoryScreen() {
 
   return (
     <Screen includeBottomInset={false} padded={false}>
-      <TopNavbar onMenuPress={openDrawer} />
+      <TopNavbar cartItemCount={cartItemCount} onCartPress={openCart} onMenuPress={openDrawer} />
       <TabPageContent isLoading={isPageLoading} loadingLabel="Loading category page">
         <ScrollView
           className="flex-1"

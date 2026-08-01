@@ -6,22 +6,26 @@ import { colors, iconSizes, iconStrokeWidths } from '@/theme';
 
 interface ProductDetailActionsProps {
   isFavorite: boolean;
+  isInBag: boolean;
   onAddToBagPress: () => void;
+  onGoToBagPress: () => void;
   onWishlistPress: () => void;
 }
 
 export function ProductDetailActions({
   isFavorite,
+  isInBag,
   onAddToBagPress,
+  onGoToBagPress,
   onWishlistPress,
 }: ProductDetailActionsProps) {
   return (
     <View className="flex-row items-stretch gap-3 px-4">
       <Pressable
-        accessibilityLabel="Add product to bag"
+        accessibilityLabel={isInBag ? 'Go to shopping bag' : 'Add product to bag'}
         accessibilityRole="button"
         className="min-h-14 flex-1 flex-row items-center justify-center gap-2 rounded-sm bg-brand px-3 active:opacity-70"
-        onPress={onAddToBagPress}
+        onPress={isInBag ? onGoToBagPress : onAddToBagPress}
       >
         <ShoppingBag
           accessible={false}
@@ -30,7 +34,7 @@ export function ProductDetailActions({
           strokeWidth={iconStrokeWidths.emphasized}
         />
         <Text className="uppercase" tone="brandForeground" variant="bodyStrong">
-          Add to Bag
+          {isInBag ? 'Go to Bag' : 'Add to Bag'}
         </Text>
       </Pressable>
 

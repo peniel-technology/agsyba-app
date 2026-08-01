@@ -59,7 +59,7 @@ describe('ProductRecommendationSlider', () => {
     );
 
     fireEvent.press(getByLabelText('Open CLARKS Classic Leather Loafers'));
-    fireEvent.press(getByLabelText('Add Classic Leather Loafers to cart'));
+    fireEvent.press(getByLabelText('Add Classic Leather Loafers to bag'));
     fireEvent.press(getByLabelText('Add Classic Leather Loafers to wishlist'));
     fireEvent.press(getByLabelText('View all You May Also Like'));
 

@@ -38,10 +38,10 @@ describe('ProductGrid', () => {
       />,
     );
 
-    fireEvent.press(getByLabelText('Add Floral Georgette Wrap Dress to cart'));
+    fireEvent.press(getByLabelText('Add Floral Georgette Wrap Dress to bag'));
     fireEvent.press(getByLabelText('See More All Collections'));
 
-    expect(getByText('Add to Cart')).toBeTruthy();
+    expect(getByText('Add to Bag')).toBeTruthy();
     expect(getByText('All Collections')).toBeTruthy();
     expect(getByText('Floral Georgette Wrap Dress')).toBeTruthy();
     expect(onSeeMorePress).toHaveBeenCalledTimes(1);

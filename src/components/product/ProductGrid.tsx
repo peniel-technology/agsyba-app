@@ -3,6 +3,7 @@ import { useWindowDimensions, View } from 'react-native';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductSectionHeader } from '@/components/product/ProductSectionHeader';
+import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
@@ -31,6 +32,7 @@ export function ProductGrid({
   showHeader = true,
   title,
 }: ProductGridProps) {
+  const { bagProductIds, openBag } = useProductBagNavigation();
   const { width } = useWindowDimensions();
   const contentWidth = width - spacing[8];
   const columnCount = Math.max(
@@ -53,9 +55,11 @@ export function ProductGrid({
           {products.map((product) => (
             <ProductCard
               cardWidth={cardWidth}
+              isInBag={bagProductIds.has(product.id)}
               key={product.id}
               onAddToCartPress={onAddToCartPress}
               onFavoritePress={onFavoritePress}
+              onGoToBagPress={openBag}
               onPress={onProductPress}
               product={product}
             />

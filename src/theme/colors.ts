@@ -19,6 +19,7 @@ export const colors = {
   saleDivider: '#FFE4E6',
   rating: '#FCD34D',
   shadow: '#000000',
-  success: '#16A34A',
+  success: '#3B7A57',
+  successSurface: '#F0FDF4',
   error: '#DC2626',
 } as const;

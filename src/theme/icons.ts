@@ -3,6 +3,7 @@ export const iconSizes = {
   compact: 16,
   medium: 20,
   large: 24,
+  extraLarge: 48,
 } as const;
 
 export const iconStrokeWidths = {

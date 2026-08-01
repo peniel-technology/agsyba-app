@@ -4,6 +4,7 @@ import { FlatList, View } from 'react-native';
 
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductSectionHeader } from '@/components/product/ProductSectionHeader';
+import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
@@ -40,16 +41,19 @@ export function ProductSlider({
   seeMoreLabel = 'See More',
   title,
 }: ProductSliderProps) {
+  const { bagProductIds, openBag } = useProductBagNavigation();
   const renderProduct = useCallback<ListRenderItem<ProductPreview>>(
     ({ item }) => (
       <ProductCard
+        isInBag={bagProductIds.has(item.id)}
         onAddToCartPress={onAddToCartPress}
         onFavoritePress={onFavoritePress}
+        onGoToBagPress={openBag}
         onPress={onProductPress}
         product={item}
       />
     ),
-    [onAddToCartPress, onFavoritePress, onProductPress],
+    [bagProductIds, onAddToCartPress, onFavoritePress, onProductPress, openBag],
   );
 
   if (products.length === 0) {

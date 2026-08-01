@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Screen, SidebarDrawer, TabPageContent, TopNavbar } from '@/components/layouts';
 import { ProductSearchModal } from '@/components/modals/ProductSearchModal';
@@ -50,8 +50,8 @@ export default function HomeScreen() {
     router.push(routes.productDetail);
   }, [closeSearch, router]);
   const openCart = useCallback(() => {
-    Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
-  }, [cartItemCount]);
+    router.push(routes.shoppingBag);
+  }, [router]);
 
   return (
     <Screen includeBottomInset={false} padded={false}>

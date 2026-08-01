@@ -11,10 +11,13 @@ import { formatCurrency } from '@/utils/formatCurrency';
 
 interface ProductCardProps {
   cardWidth?: number;
+  isInBag?: boolean;
   onAddToCartPress?: (product: ProductPreview) => void;
   onFavoritePress?: (product: ProductPreview) => void;
+  onGoToBagPress?: () => void;
   onPress?: (product: ProductPreview) => void;
   product: ProductPreview;
+  showAddToCartButton?: boolean;
 }
 
 function formatDiscount(discountPercentage: number): string {
@@ -29,10 +32,13 @@ const styles = StyleSheet.create({
 
 export const ProductCard = memo(function ProductCard({
   cardWidth,
+  isInBag = false,
   onAddToCartPress,
   onFavoritePress,
+  onGoToBagPress,
   onPress,
   product,
+  showAddToCartButton = true,
 }: ProductCardProps) {
   const productAccessibilityLabel = `Open ${product.brand} ${product.name}`;
   const hasBestPrice = product.bestPrice.amount < product.price.amount;
@@ -76,7 +82,6 @@ export const ProductCard = memo(function ProductCard({
           <View className="absolute bottom-2 left-2 flex-row items-center gap-0.5 rounded-full bg-surface px-2 py-1">
             <Text variant="detailStrong">{product.rating.toFixed(1)}</Text>
             <Star
-              accessible={false}
               color={colors.rating}
               fill={colors.rating}
               size={spacing[2]}
@@ -118,13 +123,24 @@ export const ProductCard = memo(function ProductCard({
         </View>
       </Pressable>
 
-      <View className="px-2.5 pb-2.5">
-        <ProductAddToCartButton
-          accessibilityLabel={`Add ${product.name} to cart`}
-          disabled={!onAddToCartPress}
-          onPress={onAddToCartPress ? () => onAddToCartPress(product) : undefined}
-        />
-      </View>
+      {showAddToCartButton ? (
+        <View className="px-2.5 pb-2.5">
+          <ProductAddToCartButton
+            accessibilityLabel={
+              isInBag ? `Go to shopping bag for ${product.name}` : `Add ${product.name} to bag`
+            }
+            disabled={isInBag ? !onGoToBagPress : !onAddToCartPress}
+            label={isInBag ? 'Go to Bag' : 'Add to Bag'}
+            onPress={
+              isInBag
+                ? onGoToBagPress
+                : onAddToCartPress
+                  ? () => onAddToCartPress(product)
+                  : undefined
+            }
+          />
+        </View>
+      ) : null}
 
       <Pressable
         accessibilityLabel={`${product.isFavorite ? 'Remove' : 'Add'} ${product.name} ${
@@ -138,7 +154,6 @@ export const ProductCard = memo(function ProductCard({
         onPress={onFavoritePress ? () => onFavoritePress(product) : undefined}
       >
         <Heart
-          accessible={false}
           color={colors.brand}
           fill={product.isFavorite ? colors.brand : 'none'}
           size={iconSizes.small}

@@ -40,10 +40,10 @@ describe('ProductCard', () => {
     );
 
     fireEvent.press(getByLabelText('Open ZARA Pleated Chiffon Midi Dress'));
-    fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to cart'));
+    fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to bag'));
     fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to wishlist'));
 
-    expect(getByText('Add to Cart')).toBeTruthy();
+    expect(getByText('Add to Bag')).toBeTruthy();
     expect(getByText('20% OFF')).toBeTruthy();
     expect(getByText('AED 45.00')).toBeTruthy();
     expect(getByText('4.2')).toBeTruthy();
@@ -63,5 +63,17 @@ describe('ProductCard', () => {
 
     expect(queryByText('0% OFF')).toBeNull();
     expect(queryByText(/Best Price/)).toBeNull();
+  });
+
+  it('shows a go-to-bag action when the product is already in the bag', () => {
+    const onGoToBagPress = jest.fn();
+    const { getByLabelText, getByText } = render(
+      <ProductCard isInBag onGoToBagPress={onGoToBagPress} product={product} />,
+    );
+
+    fireEvent.press(getByLabelText(`Go to shopping bag for ${product.name}`));
+
+    expect(getByText('Go to Bag')).toBeTruthy();
+    expect(onGoToBagPress).toHaveBeenCalledTimes(1);
   });
 });

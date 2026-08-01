@@ -27,6 +27,7 @@ module.exports = {
         'sale-badge': 'rgb(var(--color-sale-badge) / <alpha-value>)',
         'sale-divider': 'rgb(var(--color-sale-divider) / <alpha-value>)',
         success: 'rgb(var(--color-success) / <alpha-value>)',
+        'success-surface': 'rgb(var(--color-success-surface) / <alpha-value>)',
         error: 'rgb(var(--color-error) / <alpha-value>)',
       },
       fontFamily: {

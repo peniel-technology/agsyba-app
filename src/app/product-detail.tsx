@@ -40,6 +40,9 @@ export default function ProductDetailScreen() {
   const router = useRouter();
   const addCartItem = useCartStore((state) => state.addItem);
   const cartItemCount = useCartStore((state) => state.itemCount);
+  const isProductInBag = useCartStore(
+    (state) => state.items[blushFloralWrapMidiDressPreview.id] !== undefined,
+  );
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -71,8 +74,8 @@ export default function ProductDetailScreen() {
     addCartItem(blushFloralWrapMidiDressPreview, quantity);
   }, [addCartItem, quantity]);
   const openBag = useCallback(() => {
-    Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
-  }, [cartItemCount]);
+    router.push(routes.shoppingBag);
+  }, [router]);
   const openSizeGuide = useCallback(() => {
     Alert.alert('Size Guide', 'XS: 6 · S: 8 · M: 10 · L: 12 · XL: 14');
   }, []);
@@ -137,7 +140,9 @@ export default function ProductDetailScreen() {
           <ProductQuantitySelector onQuantityChange={setQuantity} quantity={quantity} />
           <ProductDetailActions
             isFavorite={isFavorite}
+            isInBag={isProductInBag}
             onAddToBagPress={addToBag}
+            onGoToBagPress={openBag}
             onWishlistPress={toggleFavorite}
           />
           <ProductBestOffers offers={blushFloralWrapMidiDress.offers} />

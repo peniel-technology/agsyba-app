@@ -13,8 +13,10 @@ import { formatCurrency } from '@/utils/formatCurrency';
 
 interface ProductRecommendationCardProps {
   isFavorite: boolean;
+  isInBag: boolean;
   onAddToCartPress: (product: ProductPreview) => void;
   onFavoritePress: (product: ProductPreview) => void;
+  onGoToBagPress: () => void;
   onProductPress: (product: ProductPreview) => void;
   product: ProductPreview;
 }
@@ -30,8 +32,10 @@ function normalizeRating(rating: number): ProductRating {
 
 export const ProductRecommendationCard = memo(function ProductRecommendationCard({
   isFavorite,
+  isInBag,
   onAddToCartPress,
   onFavoritePress,
+  onGoToBagPress,
   onProductPress,
   product,
 }: ProductRecommendationCardProps) {
@@ -73,8 +77,11 @@ export const ProductRecommendationCard = memo(function ProductRecommendationCard
 
       <View className="px-3 pb-3">
         <ProductAddToCartButton
-          accessibilityLabel={`Add ${product.name} to cart`}
-          onPress={() => onAddToCartPress(product)}
+          accessibilityLabel={
+            isInBag ? `Go to shopping bag for ${product.name}` : `Add ${product.name} to bag`
+          }
+          label={isInBag ? 'Go to Bag' : 'Add to Bag'}
+          onPress={isInBag ? onGoToBagPress : () => onAddToCartPress(product)}
         />
       </View>
 

@@ -4,6 +4,7 @@ import { FlatList, Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
 import { ProductRecommendationCard } from '@/features/products/components/detail/ProductRecommendationCard';
+import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
@@ -36,6 +37,7 @@ export function ProductRecommendationSlider({
   products,
   title,
 }: ProductRecommendationSliderProps) {
+  const { bagProductIds, openBag } = useProductBagNavigation();
   const [favoriteProductIds, setFavoriteProductIds] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
@@ -56,13 +58,15 @@ export function ProductRecommendationSlider({
     ({ item }) => (
       <ProductRecommendationCard
         isFavorite={favoriteProductIds.has(item.id)}
+        isInBag={bagProductIds.has(item.id)}
         onAddToCartPress={onAddToCartPress}
         onFavoritePress={toggleFavorite}
+        onGoToBagPress={openBag}
         onProductPress={onProductPress}
         product={item}
       />
     ),
-    [favoriteProductIds, onAddToCartPress, onProductPress, toggleFavorite],
+    [bagProductIds, favoriteProductIds, onAddToCartPress, onProductPress, openBag, toggleFavorite],
   );
 
   if (products.length === 0) {

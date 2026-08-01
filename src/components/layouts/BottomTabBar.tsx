@@ -68,8 +68,10 @@ export function BottomTabBar({ activeTab, enabledTabs, onTabPress }: BottomTabBa
           accessibilityElementsHidden
           className="absolute top-0 h-0.5 rounded-full bg-brand"
           importantForAccessibility="no-hide-descendants"
-          pointerEvents="none"
-          style={[{ width: `${100 / bottomTabItems.length}%` }, indicatorStyle]}
+          style={[
+            { pointerEvents: 'none', width: `${100 / bottomTabItems.length}%` },
+            indicatorStyle,
+          ]}
         />
         {bottomTabItems.map((item) => {
           const isActive = item.id === activeTab;
@@ -90,7 +92,6 @@ export function BottomTabBar({ activeTab, enabledTabs, onTabPress }: BottomTabBa
               onPress={isEnabled ? () => onTabPress(item.id) : undefined}
             >
               <Icon
-                accessible={false}
                 color={isActive ? colors.brand : colors.muted}
                 size={iconSizes.medium}
                 strokeWidth={iconStrokeWidths.regular}

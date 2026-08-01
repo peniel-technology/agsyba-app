@@ -7,11 +7,14 @@ jest.mock('lucide-react-native', () => ({ Heart: 'Heart', ShoppingBag: 'Shopping
 describe('ProductDetailActions', () => {
   it('invokes add-to-bag and wishlist actions', () => {
     const onAddToBagPress = jest.fn();
+    const onGoToBagPress = jest.fn();
     const onWishlistPress = jest.fn();
     const { getByLabelText } = render(
       <ProductDetailActions
         isFavorite={false}
+        isInBag={false}
         onAddToBagPress={onAddToBagPress}
+        onGoToBagPress={onGoToBagPress}
         onWishlistPress={onWishlistPress}
       />,
     );
@@ -21,5 +24,23 @@ describe('ProductDetailActions', () => {
 
     expect(onAddToBagPress).toHaveBeenCalledTimes(1);
     expect(onWishlistPress).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens the bag when the product is already added', () => {
+    const onGoToBagPress = jest.fn();
+    const { getByLabelText, getByText } = render(
+      <ProductDetailActions
+        isFavorite={false}
+        isInBag
+        onAddToBagPress={jest.fn()}
+        onGoToBagPress={onGoToBagPress}
+        onWishlistPress={jest.fn()}
+      />,
+    );
+
+    fireEvent.press(getByLabelText('Go to shopping bag'));
+
+    expect(getByText('Go to Bag')).toBeTruthy();
+    expect(onGoToBagPress).toHaveBeenCalledTimes(1);
   });
 });

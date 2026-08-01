@@ -1,5 +1,8 @@
 export const layout = {
   bottomTabBarHeight: 64,
+  cartItemImageHeight: 112,
+  cartItemImageWidth: 96,
+  cartRecommendationCardWidth: 176,
   categoryCardAspectRatio: 0.8,
   categoryCircleSize: 68,
   categoryGridPhoneColumns: 2,

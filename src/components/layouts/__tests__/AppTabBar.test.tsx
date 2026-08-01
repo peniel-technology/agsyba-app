@@ -215,4 +215,65 @@ describe('AppTabBar', () => {
     expect(queryByLabelText('Home tab')).toBeNull();
     expect(queryByLabelText('Category tab')).toBeNull();
   });
+
+  it('selects the shop tab on the shopping bag route', () => {
+    mockUsePathname.mockReturnValue('/shopping-bag');
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit: jest.fn(), navigate: jest.fn() },
+      state: {
+        history: [],
+        index: 2,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'shopping-bag'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'shopping-bag-key', name: 'shopping-bag', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { getByLabelText } = render(<AppTabBar {...props} />);
+
+    expect(getByLabelText('Shop tab')).toHaveAccessibilityState({ selected: true });
+    expect(getByLabelText('Home tab')).toHaveAccessibilityState({ selected: false });
+  });
+
+  it('opens the shopping bag from the shop tab', () => {
+    const emit = jest.fn(() => ({ defaultPrevented: false }));
+    const navigate = jest.fn();
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit, navigate },
+      state: {
+        history: [],
+        index: 0,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'shopping-bag'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'shopping-bag-key', name: 'shopping-bag', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { getByLabelText } = render(<AppTabBar {...props} />);
+
+    fireEvent.press(getByLabelText('Shop tab'));
+
+    expect(emit).toHaveBeenCalledWith({
+      canPreventDefault: true,
+      target: 'shopping-bag-key',
+      type: 'tabPress',
+    });
+    expect(navigate).toHaveBeenCalledWith('shopping-bag');
+  });
 });

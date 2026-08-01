@@ -7,12 +7,14 @@ import { colors, iconSizes, iconStrokeWidths } from '@/theme';
 interface ProductAddToCartButtonProps {
   accessibilityLabel: string;
   disabled?: boolean;
+  label?: 'Add to Bag' | 'Go to Bag';
   onPress?: () => void;
 }
 
 export function ProductAddToCartButton({
   accessibilityLabel,
   disabled = false,
+  label = 'Add to Bag',
   onPress,
 }: ProductAddToCartButtonProps) {
   const isDisabled = disabled || onPress === undefined;
@@ -33,7 +35,7 @@ export function ProductAddToCartButton({
         strokeWidth={iconStrokeWidths.regular}
       />
       <Text tone="brand" variant="badge">
-        Add to Cart
+        {label}
       </Text>
     </Pressable>
   );

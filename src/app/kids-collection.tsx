@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Alert, RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 
 import { CollectionPageHeader, Screen } from '@/components/layouts';
 import { CollectionRefreshLoader } from '@/components/loaders/CollectionRefreshLoader';
@@ -48,8 +48,8 @@ export default function KidsCollectionScreen() {
     router.push(routes.productDetail);
   }, [closeSearch, router]);
   const openCart = useCallback(() => {
-    Alert.alert('Shopping Bag', `${cartItemCount} items in your bag.`);
-  }, [cartItemCount]);
+    router.push(routes.shoppingBag);
+  }, [router]);
   const openFilters = useCallback(() => {
     beginEditingFilters();
     router.push({

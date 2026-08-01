@@ -38,10 +38,10 @@ describe('ProductSlider', () => {
       />,
     );
 
-    fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to cart'));
+    fireEvent.press(getByLabelText('Add Pleated Chiffon Midi Dress to bag'));
     fireEvent.press(getByLabelText('See More New Arrivals'));
 
-    expect(getByText('Add to Cart')).toBeTruthy();
+    expect(getByText('Add to Bag')).toBeTruthy();
     expect(getByText('New Arrivals')).toBeTruthy();
     expect(getByLabelText('New Arrivals products')).toBeTruthy();
     expect(onSeeMorePress).toHaveBeenCalledTimes(1);

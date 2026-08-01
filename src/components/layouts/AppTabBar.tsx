@@ -4,11 +4,12 @@ import { usePathname } from 'expo-router';
 import { BottomTabBar, type BottomTabId } from '@/components/layouts/BottomTabBar';
 import { routes } from '@/constants/routes';
 
-const enabledTabs = ['home', 'category'] as const satisfies readonly BottomTabId[];
+const enabledTabs = ['home', 'category', 'shop'] as const satisfies readonly BottomTabId[];
 
 const routeNames = {
   category: 'category',
   home: 'index',
+  shop: 'shopping-bag',
 } as const;
 
 function isCategoryPath(pathname: string): boolean {
@@ -33,9 +34,10 @@ export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
     return null;
   }
 
-  const activeTab: BottomTabId = isCategoryPath(pathname) ? 'category' : 'home';
+  const activeTab: BottomTabId =
+    pathname === routes.shoppingBag ? 'shop' : isCategoryPath(pathname) ? 'category' : 'home';
   const handleTabPress = (tab: BottomTabId) => {
-    if (tab !== 'home' && tab !== 'category') {
+    if (tab !== 'home' && tab !== 'category' && tab !== 'shop') {
       return;
     }
 
