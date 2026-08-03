@@ -29,6 +29,7 @@ void SplashScreen.preventAutoHideAsync();
 
 const homeTabOptions = { title: 'Home' } as const;
 const categoryTabOptions = { title: 'Category' } as const;
+const deliveryAddressTabOptions = { href: null, title: 'Add Delivery Address' } as const;
 const footwearCollectionTabOptions = { href: null, title: 'Footwear' } as const;
 const kidsCollectionTabOptions = { href: null, title: "Kids' Collection" } as const;
 const mensCollectionTabOptions = { href: null, title: "Men's Collection" } as const;
@@ -115,6 +116,7 @@ export default function RootLayout() {
             <Tabs.Screen name="product-detail" options={productDetailTabOptions} />
             <Tabs.Screen name="product-filters" options={productFiltersTabOptions} />
             <Tabs.Screen name="shopping-bag" options={shoppingBagTabOptions} />
+            <Tabs.Screen name="delivery-address" options={deliveryAddressTabOptions} />
             <Tabs.Screen name="womens-collection" options={womensCollectionTabOptions} />
           </Tabs>
         </QueryClientProvider>

@@ -50,6 +50,17 @@ describe('shopping bag components', () => {
     expect(onSearchPress).toHaveBeenCalledTimes(1);
   });
 
+  it('reuses the shopping bag navbar with a checkout title', () => {
+    const { getByLabelText, getByText } = render(
+      <ShoppingBagHeader itemCount={2} onBackPress={jest.fn()} title="Add Delivery Address" />,
+    );
+
+    expect(getByText('Add Delivery Address')).toBeTruthy();
+    expect(getByLabelText('Search products')).toBeDisabled();
+    expect(getByLabelText('Notifications')).toBeDisabled();
+    expect(getByLabelText('Shopping bag, 2 items')).toBeTruthy();
+  });
+
   it('renders the empty-cart actions and invokes both destinations', () => {
     const onContinueShoppingPress = jest.fn();
     const onShopNowPress = jest.fn();

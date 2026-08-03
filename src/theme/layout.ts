@@ -7,6 +7,7 @@ export const layout = {
   categoryCircleSize: 68,
   categoryGridPhoneColumns: 2,
   categoryGridTabletColumns: 4,
+  countryCallingCodeDropdownHeight: 220,
   productCardImageHeight: 190,
   productCardWidth: 192,
   productDetailGalleryHeight: 420,

@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { AppliedCouponCard } from '@/components/cart/AppliedCouponCard';
 import { ApplyCouponCard } from '@/components/cart/ApplyCouponCard';
@@ -115,11 +115,8 @@ export default function ShoppingBagScreen() {
     setIsCouponApplied(false);
   }, []);
   const proceedToCheckout = useCallback(() => {
-    Alert.alert(
-      'Proceed to Checkout',
-      `Your order total is ${totalMoney.currency} ${totalMoney.amount.toFixed(2)}.`,
-    );
-  }, [totalMoney.amount, totalMoney.currency]);
+    router.push(routes.deliveryAddress);
+  }, [router]);
 
   return (
     <Screen includeBottomInset={false} padded={false}>

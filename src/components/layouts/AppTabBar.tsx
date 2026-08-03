@@ -35,7 +35,11 @@ export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
   }
 
   const activeTab: BottomTabId =
-    pathname === routes.shoppingBag ? 'shop' : isCategoryPath(pathname) ? 'category' : 'home';
+    pathname === routes.shoppingBag || pathname === routes.deliveryAddress
+      ? 'shop'
+      : isCategoryPath(pathname)
+        ? 'category'
+        : 'home';
   const handleTabPress = (tab: BottomTabId) => {
     if (tab !== 'home' && tab !== 'category' && tab !== 'shop') {
       return;

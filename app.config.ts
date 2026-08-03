@@ -26,9 +26,20 @@ const config: ExpoConfig = {
       { backgroundColor: '#208AEF', image: './assets/images/splash-icon.png', imageWidth: 76 },
     ],
     'expo-secure-store',
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission:
+          'Allow AGSYBA to use your location to fill in your delivery address.',
+      },
+    ],
   ],
   experiments: { typedRoutes: true, reactCompiler: true },
-  extra: { apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'https://api.example.com' },
+  extra: {
+    apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'https://api.example.com',
+    reverseGeocodingUrl: process.env.EXPO_PUBLIC_REVERSE_GEOCODING_URL ?? '',
+    reverseGeocodingUserAgent: process.env.EXPO_PUBLIC_GEOCODING_USER_AGENT ?? '',
+  },
 };
 
 export default config;
