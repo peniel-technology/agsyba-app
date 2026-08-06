@@ -1,4 +1,4 @@
-import { Building, CreditCard, HandCoins } from 'lucide-react-native';
+import { Banknote, Building, CreditCard } from 'lucide-react-native';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 
@@ -134,10 +134,10 @@ export const PaymentMethods = memo(function PaymentMethods({
         isOpen={isCodSelected}
         left={
           <PaymentMethodRadio checked={isCodSelected} title="Cash on Delivery" iconFirst>
-            <HandCoins
+            <Banknote
               color={isCodSelected ? colors.brand : colors.muted}
               size={iconSizes.compact}
-              strokeWidth={iconStrokeWidths.subtle}
+              strokeWidth={iconStrokeWidths.emphasized}
             />
           </PaymentMethodRadio>
         }
