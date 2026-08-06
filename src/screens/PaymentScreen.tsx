@@ -101,8 +101,8 @@ export default function PaymentScreen() {
   }, []);
 
   const handlePayPress = useCallback(() => {
-    return;
-  }, []);
+    router.push(routes.orderSuccess);
+  }, [router]);
 
   const handleCardNumberChange = useCallback((value: string) => {
     setCardNumber(value.replace(/\D/g, ''));

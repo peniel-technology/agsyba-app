@@ -37,7 +37,8 @@ export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
   const activeTab: BottomTabId =
     pathname === routes.shoppingBag ||
     pathname === routes.deliveryAddress ||
-    pathname === routes.payment
+    pathname === routes.payment ||
+    pathname === routes.orderSuccess
       ? 'shop'
       : isCategoryPath(pathname)
         ? 'category'
