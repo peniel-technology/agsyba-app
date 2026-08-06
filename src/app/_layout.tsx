@@ -30,6 +30,7 @@ void SplashScreen.preventAutoHideAsync();
 const homeTabOptions = { title: 'Home' } as const;
 const categoryTabOptions = { title: 'Category' } as const;
 const deliveryAddressTabOptions = { href: null, title: 'Add Delivery Address' } as const;
+const contactTabOptions = { href: null, title: 'Contact' } as const;
 const orderSuccessTabOptions = { href: null, title: 'Order Success' } as const;
 const paymentTabOptions = { href: null, title: 'Payment' } as const;
 const footwearCollectionTabOptions = { href: null, title: 'Footwear' } as const;
@@ -118,6 +119,7 @@ export default function RootLayout() {
             <Tabs.Screen name="product-detail" options={productDetailTabOptions} />
             <Tabs.Screen name="product-filters" options={productFiltersTabOptions} />
             <Tabs.Screen name="shopping-bag" options={shoppingBagTabOptions} />
+            <Tabs.Screen name="contact" options={contactTabOptions} />
             <Tabs.Screen name="delivery-address" options={deliveryAddressTabOptions} />
             <Tabs.Screen name="payment" options={paymentTabOptions} />
             <Tabs.Screen name="order-success" options={orderSuccessTabOptions} />

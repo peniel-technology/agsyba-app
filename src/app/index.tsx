@@ -29,6 +29,7 @@ import { trendingFootwear } from '@/features/home/constants/trendingFootwear';
 import { useTabPageLoader } from '@/hooks/useTabPageLoader';
 import { useCartStore } from '@/stores/useCartStore';
 import { useUiStore } from '@/stores/useUiStore';
+import type { DrawerItemId } from '@/types/drawer';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -52,6 +53,16 @@ export default function HomeScreen() {
   const openCart = useCallback(() => {
     router.push(routes.shoppingBag);
   }, [router]);
+  const handleDrawerItemPress = useCallback(
+    (itemId: DrawerItemId) => {
+      closeDrawer();
+
+      if (itemId === 'contact') {
+        router.push('/contact');
+      }
+    },
+    [closeDrawer, router],
+  );
 
   return (
     <Screen includeBottomInset={false} padded={false}>
@@ -116,7 +127,11 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
       </TabPageContent>
-      <SidebarDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
+      <SidebarDrawer
+        isOpen={isDrawerOpen}
+        onClose={closeDrawer}
+        onItemPress={handleDrawerItemPress}
+      />
       <ProductSearchModal
         isVisible={isSearchVisible}
         onAddToCartPress={addCartItem}

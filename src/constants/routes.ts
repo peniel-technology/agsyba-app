@@ -1,5 +1,6 @@
 export const routes = {
   category: '/category',
+  contact: '/contact',
   deliveryAddress: '/delivery-address',
   orderSuccess: '/order-success',
   payment: '/payment',

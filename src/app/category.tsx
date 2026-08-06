@@ -15,6 +15,7 @@ import type { BrowseCategory } from '@/features/products/types/browseCategory';
 import { useTabPageLoader } from '@/hooks/useTabPageLoader';
 import { useCartStore } from '@/stores/useCartStore';
 import { useUiStore } from '@/stores/useUiStore';
+import type { DrawerItemId } from '@/types/drawer';
 
 export default function CategoryScreen() {
   const router = useRouter();
@@ -34,6 +35,16 @@ export default function CategoryScreen() {
       }
     },
     [router],
+  );
+  const handleDrawerItemPress = useCallback(
+    (itemId: DrawerItemId) => {
+      closeDrawer();
+
+      if (itemId === 'contact') {
+        router.push('/contact');
+      }
+    },
+    [closeDrawer, router],
   );
 
   return (
@@ -63,7 +74,11 @@ export default function CategoryScreen() {
           </View>
         </ScrollView>
       </TabPageContent>
-      <SidebarDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
+      <SidebarDrawer
+        isOpen={isDrawerOpen}
+        onClose={closeDrawer}
+        onItemPress={handleDrawerItemPress}
+      />
     </Screen>
   );
 }
