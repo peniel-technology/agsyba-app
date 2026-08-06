@@ -93,10 +93,9 @@ export default function DeliveryAddressScreen() {
 
   const handleDeliverHere = form.handleSubmit((values) => {
     Keyboard.dismiss();
-    setStatusModal({
-      message: `Your order will be delivered to ${values.addressLine1}.`,
-      title: 'Delivery address saved',
-      tone: 'success',
+    void router.push({
+      params: values,
+      pathname: routes.payment,
     });
   });
 
