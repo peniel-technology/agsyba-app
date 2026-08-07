@@ -11,6 +11,7 @@ interface ShoppingBagHeaderProps {
   onNotificationsPress?: () => void;
   onSearchPress?: () => void;
   title?: string;
+  titleClassName?: string;
 }
 
 interface HeaderActionProps {
@@ -41,6 +42,7 @@ export function ShoppingBagHeader({
   onNotificationsPress,
   onSearchPress,
   title = 'Shopping Bag',
+  titleClassName,
 }: ShoppingBagHeaderProps) {
   return (
     <CheckoutHeader
@@ -65,6 +67,7 @@ export function ShoppingBagHeader({
         </>
       }
       title={title}
+      titleClassName={titleClassName}
     />
   );
 }

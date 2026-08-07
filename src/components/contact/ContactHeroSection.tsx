@@ -25,7 +25,7 @@ export function ContactHeroSection({ image, badge, title, subtitle }: ContactHer
       <View className="absolute inset-0 items-center justify-center p-6">
         <View className="w-full flex flex-col items-center justify-start gap-3">
           <Text className="text-red-500 text-xs font-manrope-extrabold uppercase">{badge}</Text>
-          <Text className="uppercase" tone="brandForeground" variant="promotionalTitle">
+          <Text className="uppercase text-center" tone="brandForeground" variant="promotionalTitle">
             {title}
           </Text>
           <Text className="self-stretch text-center text-sm font-manrope font-normal text-white opacity-80">

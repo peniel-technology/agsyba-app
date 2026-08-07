@@ -10,6 +10,7 @@ interface CheckoutHeaderProps {
   onBackPress: () => void;
   rightActions?: ReactNode;
   title: string;
+  titleClassName?: string;
 }
 
 function formatItemCount(count: number): string {
@@ -21,6 +22,7 @@ export function CheckoutHeader({
   onBackPress,
   rightActions,
   title,
+  titleClassName,
 }: CheckoutHeaderProps) {
   const visibleItemCount = Math.max(0, itemCount);
   const bagAccessibilityLabel =
@@ -46,7 +48,11 @@ export function CheckoutHeader({
       </Pressable>
 
       <View pointerEvents="none" className="absolute inset-x-14 items-center justify-center">
-        <Text className="text-sm" numberOfLines={1} variant="bodyStrong">
+        <Text
+          className={titleClassName ? `text-sm ${titleClassName}` : 'text-sm'}
+          numberOfLines={1}
+          variant="bodyStrong"
+        >
           {title}
         </Text>
       </View>
