@@ -1,6 +1,7 @@
 import { Minus, Plus } from 'lucide-react-native';
 import { memo } from 'react';
 import { Pressable, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
 
 import { Text } from '@/components/ui/Text';
 import { colors } from '@/theme/colors';
@@ -23,7 +24,7 @@ export const FAQAccordion = memo(function FAQAccordion({
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded }}
-        className="flex-1 flex-row items-start justify-between px-5 py-4"
+        className="flex-row items-start justify-between px-5 py-4"
         onPress={onPress}
       >
         <Text className="flex-1 text-base font-manrope-bold leading-5 text-neutral-900">
@@ -38,9 +39,14 @@ export const FAQAccordion = memo(function FAQAccordion({
         </View>
       </Pressable>
       {expanded ? (
-        <View className="border-t border-zinc-100 px-5 pb-5 pt-3">
+        <Animated.View
+          entering={FadeIn.duration(180)}
+          exiting={FadeOut.duration(180)}
+          layout={Layout.springify()}
+          className="border-t border-zinc-100 px-5 pb-5 pt-3"
+        >
           <Text className="text-xs font-manrope leading-5 text-neutral-500">{description}</Text>
-        </View>
+        </Animated.View>
       ) : null}
     </View>
   );

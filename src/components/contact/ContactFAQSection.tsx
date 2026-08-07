@@ -29,17 +29,20 @@ export const ContactFAQSection = memo(function ContactFAQSection({
   return (
     <View className="self-stretch gap-6 bg-white p-6">
       <View className="self-stretch flex-col items-center gap-1.5">
-        <Text className="self-stretch text-center text-3xl font-instrument-serif text-neutral-900">
+        <Text
+          className="self-stretch text-center text-3xl font-instrument-serif text-neutral-900"
+          variant="promotionalTitle"
+        >
           {data.title}
         </Text>
-        <Text className="self-stretch text-center text-sm font-manrope leading-5 text-neutral-500">
+        <Text className="self-stretch text-center text-sm font-manrope leading-5 text-neutral-500 py-1">
           {data.subtitle}
         </Text>
       </View>
 
-      <View className="self-stretch">
-        {data.faqs.map((faq, index) => (
-          <View key={faq.id} className={index === data.faqs.length - 1 ? '' : 'mb-4'}>
+      <View className="self-stretch flex-col gap-4">
+        {data.faqs.map((faq) => (
+          <View key={faq.id}>
             <FAQAccordion
               description={faq.answer}
               expanded={expandedId === faq.id}

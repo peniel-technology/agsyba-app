@@ -28,7 +28,9 @@ export function ContactFormSection({
   return (
     <View className="w-full flex-col gap-6 p-6">
       <View className="flex-col gap-1.5">
-        <Text className="text-3xl font-manrope-bold text-neutral-900">{data.title}</Text>
+        <Text className="text-xl font-manrope-bold text-neutral-900" variant="heading">
+          {data.title}
+        </Text>
         <Text className="leading-5 text-sm font-manrope text-neutral-500">{data.subtitle}</Text>
       </View>
 
