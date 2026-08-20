@@ -57,8 +57,13 @@ export default function HomeScreen() {
     (itemId: DrawerItemId) => {
       closeDrawer();
 
+      if (itemId === 'about') {
+        router.replace(routes.about);
+        return;
+      }
+
       if (itemId === 'contact') {
-        router.push('/contact');
+        router.replace(routes.contact);
       }
     },
     [closeDrawer, router],

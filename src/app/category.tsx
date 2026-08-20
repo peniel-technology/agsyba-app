@@ -40,8 +40,13 @@ export default function CategoryScreen() {
     (itemId: DrawerItemId) => {
       closeDrawer();
 
+      if (itemId === 'about') {
+        router.replace(routes.about);
+        return;
+      }
+
       if (itemId === 'contact') {
-        router.push('/contact');
+        router.replace(routes.contact);
       }
     },
     [closeDrawer, router],
