@@ -4,16 +4,19 @@ import { FlatList, Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
 import { ProductRecommendationCard } from '@/features/products/components/detail/ProductRecommendationCard';
-import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
 interface ProductRecommendationSliderProps {
+  bagProductIds?: ReadonlySet<string>;
   onAddToCartPress: (product: ProductPreview) => void;
+  onFavoritePress?: (product: ProductPreview) => void;
+  onGoToBagPress?: () => void;
   onProductPress: (product: ProductPreview) => void;
   onViewAllPress: () => void;
   products: readonly ProductPreview[];
   title: string;
+  wishlistProductIds?: ReadonlySet<string>;
 }
 
 const productInterval = layout.productCardWidth + spacing[3.5];
@@ -21,6 +24,8 @@ const productListContentStyle = {
   gap: spacing[3.5],
   paddingHorizontal: spacing[4],
 } as const;
+
+const noopGoToBag = () => undefined;
 
 function getProductLayout(_data: ArrayLike<ProductPreview> | null | undefined, index: number) {
   return {
@@ -31,13 +36,16 @@ function getProductLayout(_data: ArrayLike<ProductPreview> | null | undefined, i
 }
 
 export function ProductRecommendationSlider({
+  bagProductIds,
   onAddToCartPress,
+  onFavoritePress,
+  onGoToBagPress,
   onProductPress,
   onViewAllPress,
   products,
   title,
+  wishlistProductIds,
 }: ProductRecommendationSliderProps) {
-  const { bagProductIds, openBag } = useProductBagNavigation();
   const [favoriteProductIds, setFavoriteProductIds] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
@@ -57,16 +65,29 @@ export function ProductRecommendationSlider({
   const renderProduct = useCallback<ListRenderItem<ProductPreview>>(
     ({ item }) => (
       <ProductRecommendationCard
-        isFavorite={favoriteProductIds.has(item.id)}
-        isInBag={bagProductIds.has(item.id)}
+        isFavorite={
+          onFavoritePress
+            ? (wishlistProductIds?.has(item.id) ?? item.isFavorite)
+            : favoriteProductIds.has(item.id)
+        }
+        isInBag={bagProductIds?.has(item.id) ?? false}
         onAddToCartPress={onAddToCartPress}
-        onFavoritePress={toggleFavorite}
-        onGoToBagPress={openBag}
+        onFavoritePress={onFavoritePress ?? toggleFavorite}
+        onGoToBagPress={onGoToBagPress ?? noopGoToBag}
         onProductPress={onProductPress}
         product={item}
       />
     ),
-    [bagProductIds, favoriteProductIds, onAddToCartPress, onProductPress, openBag, toggleFavorite],
+    [
+      bagProductIds,
+      favoriteProductIds,
+      onAddToCartPress,
+      onFavoritePress,
+      onGoToBagPress,
+      onProductPress,
+      toggleFavorite,
+      wishlistProductIds,
+    ],
   );
 
   if (products.length === 0) {

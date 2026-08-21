@@ -14,6 +14,7 @@ const collectionReturnRoutes = [
   routes.footwearCollection,
   routes.kidsCollection,
   routes.mensCollection,
+  routes.shop,
   routes.womensCollection,
 ] as const;
 

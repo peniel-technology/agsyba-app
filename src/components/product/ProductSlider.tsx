@@ -4,18 +4,20 @@ import { FlatList, View } from 'react-native';
 
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductSectionHeader } from '@/components/product/ProductSectionHeader';
-import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
 interface ProductSliderProps {
+  bagProductIds?: ReadonlySet<string>;
   onAddToCartPress?: (product: ProductPreview) => void;
   onFavoritePress?: (product: ProductPreview) => void;
+  onGoToBagPress?: () => void;
   onProductPress?: (product: ProductPreview) => void;
   onSeeMorePress?: () => void;
   products: readonly ProductPreview[];
   seeMoreLabel?: string;
   title: string;
+  wishlistProductIds?: ReadonlySet<string>;
 }
 
 const productInterval = layout.productCardWidth + spacing[3.5];
@@ -33,27 +35,36 @@ function getProductLayout(_data: ArrayLike<ProductPreview> | null | undefined, i
 }
 
 export function ProductSlider({
+  bagProductIds,
   onAddToCartPress,
   onFavoritePress,
+  onGoToBagPress,
   onProductPress,
   onSeeMorePress,
   products,
   seeMoreLabel = 'See More',
   title,
+  wishlistProductIds,
 }: ProductSliderProps) {
-  const { bagProductIds, openBag } = useProductBagNavigation();
   const renderProduct = useCallback<ListRenderItem<ProductPreview>>(
     ({ item }) => (
       <ProductCard
-        isInBag={bagProductIds.has(item.id)}
+        isInBag={bagProductIds?.has(item.id) ?? false}
         onAddToCartPress={onAddToCartPress}
         onFavoritePress={onFavoritePress}
-        onGoToBagPress={openBag}
+        onGoToBagPress={onGoToBagPress}
         onPress={onProductPress}
-        product={item}
+        product={wishlistProductIds?.has(item.id) ? { ...item, isFavorite: true } : item}
       />
     ),
-    [bagProductIds, onAddToCartPress, onFavoritePress, onProductPress, openBag],
+    [
+      bagProductIds,
+      onAddToCartPress,
+      onFavoritePress,
+      onGoToBagPress,
+      onProductPress,
+      wishlistProductIds,
+    ],
   );
 
   if (products.length === 0) {

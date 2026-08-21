@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Keyboard, Pressable, ScrollView } from 'react-native';
@@ -33,6 +33,7 @@ interface StatusModalState {
 
 export default function DeliveryAddressScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const [isCountryPickerOpen, setIsCountryPickerOpen] = useState(false);
   const [statusModal, setStatusModal] = useState<StatusModalState | null>(null);
   const cartItemCount = useCartStore((state) => state.itemCount);
@@ -44,15 +45,14 @@ export default function DeliveryAddressScreen() {
     reValidateMode: 'onChange',
     resolver: zodResolver(deliveryAddressSchema),
   });
+  const returnToProfile = Array.isArray(params.returnTo)
+    ? params.returnTo[0] === routes.profile
+    : params.returnTo === routes.profile;
+  const parentRoute = returnToProfile ? routes.profile : routes.shoppingBag;
 
   const handleBackPress = useCallback(() => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-
-    router.replace(routes.shoppingBag);
-  }, [router]);
+    router.replace(parentRoute);
+  }, [parentRoute, router]);
 
   const handleUseCurrentLocation = useCallback(async () => {
     Keyboard.dismiss();

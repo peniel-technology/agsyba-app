@@ -1,7 +1,7 @@
-import footwearCollectionImage from '@/assets/images/categories/footwear-collection.webp';
-import kidsDressingImage from '@/assets/images/categories/kids-dressing.webp';
-import mensDressingImage from '@/assets/images/categories/mens-dressing.webp';
-import womensDressingImage from '@/assets/images/categories/womens-dressing.webp';
+import footwearCollectionImage from '@/assets/images/shop/footwear-thumb.webp';
+import kidsDressingImage from '@/assets/images/shop/kids-thumb.webp';
+import mensDressingImage from '@/assets/images/shop/men-thumb.webp';
+import womensDressingImage from '@/assets/images/shop/women-thumb.webp';
 import { routes } from '@/constants/routes';
 import type { BrowseCategory } from '@/features/products/types/browseCategory';
 

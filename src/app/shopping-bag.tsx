@@ -12,28 +12,27 @@ import { CheckoutProgress } from '@/components/cart/CheckoutProgress';
 import { FreeShippingProgress } from '@/components/cart/FreeShippingProgress';
 import { SelectAllCartItems } from '@/components/cart/SelectAllCartItems';
 import { ShoppingBagEmptyState } from '@/components/cart/ShoppingBagEmptyState';
-import { ShoppingBagHeader } from '@/components/cart/ShoppingBagHeader';
-import { Screen } from '@/components/layouts';
-import { ProductSearchModal } from '@/components/modals/ProductSearchModal';
+import { AccountPageHeader, Screen } from '@/components/layouts';
 import { cartConfiguration } from '@/constants/cart';
 import { routes } from '@/constants/routes';
 import { cartRecommendationProducts } from '@/features/checkout/constants/cartRecommendationProducts';
-import { homeSearchProducts } from '@/features/home/constants/homeSearchProducts';
+import { useWishlist } from '@/features/wishlist/hooks/useWishlist';
 import { useCartStore } from '@/stores/useCartStore';
-import { useWishlistStore } from '@/stores/useWishlistStore';
 import type { Money, ProductPreview } from '@/types/product';
 
 export default function ShoppingBagScreen() {
   const router = useRouter();
-  const addItem = useCartStore((state) => state.addItem);
-  const addWishlistItem = useWishlistStore((state) => state.addItem);
   const itemCount = useCartStore((state) => state.itemCount);
   const items = useCartStore((state) => state.items);
   const removeItem = useCartStore((state) => state.removeItem);
   const setAllItemsSelected = useCartStore((state) => state.setAllItemsSelected);
   const setItemQuantity = useCartStore((state) => state.setItemQuantity);
   const toggleItemSelection = useCartStore((state) => state.toggleItemSelection);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const {
+    addItem: addWishlistItem,
+    productIds: wishlistProductIds,
+    toggleItem: toggleWishlistItem,
+  } = useWishlist();
   const [isCouponApplied, setIsCouponApplied] = useState(true);
   const cartLines = useMemo(() => Object.values(items), [items]);
   const selectedItemCount = useMemo(
@@ -79,18 +78,17 @@ export default function ShoppingBagScreen() {
 
     router.replace(routes.home);
   }, [router]);
-  const closeSearch = useCallback(() => {
-    setIsSearchVisible(false);
-  }, []);
   const openSearch = useCallback(() => {
-    setIsSearchVisible(true);
-  }, []);
+    router.push({ params: { returnTo: routes.shoppingBag }, pathname: routes.search });
+  }, [router]);
+  const openNotifications = useCallback(() => {
+    router.push({ params: { returnTo: routes.shoppingBag }, pathname: routes.notifications });
+  }, [router]);
   const openProduct = useCallback(
-    (_product: ProductPreview) => {
-      closeSearch();
-      router.push(routes.productDetail);
+    (product: ProductPreview) => {
+      router.push({ params: { productId: product.id }, pathname: routes.productDetail });
     },
-    [closeSearch, router],
+    [router],
   );
   const openCategory = useCallback(() => {
     router.replace(routes.category);
@@ -100,7 +98,7 @@ export default function ShoppingBagScreen() {
   }, [router]);
   const moveToWishlist = useCallback(
     (product: ProductPreview) => {
-      addWishlistItem(product);
+      addWishlistItem({ ...product, isFavorite: true });
       removeItem(product.id);
     },
     [addWishlistItem, removeItem],
@@ -115,15 +113,17 @@ export default function ShoppingBagScreen() {
     setIsCouponApplied(false);
   }, []);
   const proceedToCheckout = useCallback(() => {
-    router.push(routes.deliveryAddress);
+    router.push({ params: { returnTo: routes.shoppingBag }, pathname: routes.deliveryAddress });
   }, [router]);
 
   return (
     <Screen includeBottomInset={false} padded={false}>
-      <ShoppingBagHeader
-        itemCount={itemCount}
+      <AccountPageHeader
+        cartItemCount={itemCount}
         onBackPress={handleBackPress}
+        onNotificationsPress={openNotifications}
         onSearchPress={openSearch}
+        title="Shopping Cart"
       />
       {cartLines.length > 0 ? (
         <>
@@ -183,19 +183,13 @@ export default function ShoppingBagScreen() {
             onShopNowPress={openCategory}
           />
           <CartRecommendationSlider
+            onFavoritePress={toggleWishlistItem}
             onProductPress={openProduct}
             products={cartRecommendationProducts}
+            wishlistProductIds={wishlistProductIds}
           />
         </ScrollView>
       )}
-
-      <ProductSearchModal
-        isVisible={isSearchVisible}
-        onAddToCartPress={addItem}
-        onClose={closeSearch}
-        onProductPress={openProduct}
-        products={homeSearchProducts}
-      />
     </Screen>
   );
 }

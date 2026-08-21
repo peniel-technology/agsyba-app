@@ -6,6 +6,7 @@ import { AppTabBar } from '@/components/layouts/AppTabBar';
 const mockUsePathname = jest.fn(() => '/');
 
 jest.mock('expo-router', () => ({
+  useLocalSearchParams: () => ({}),
   usePathname: () => mockUsePathname(),
 }));
 jest.mock('lucide-react-native', () => ({
@@ -243,7 +244,33 @@ describe('AppTabBar', () => {
     expect(getByLabelText('Home tab')).toHaveAccessibilityState({ selected: false });
   });
 
-  it('opens the shopping bag from the shop tab', () => {
+  it('selects the shop tab on the shop route', () => {
+    mockUsePathname.mockReturnValue('/shop');
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit: jest.fn(), navigate: jest.fn() },
+      state: {
+        history: [],
+        index: 2,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'shop'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'shop-key', name: 'shop', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { getByLabelText } = render(<AppTabBar {...props} />);
+
+    expect(getByLabelText('Shop tab')).toHaveAccessibilityState({ selected: true });
+  });
+
+  it('opens the shop page from the shop tab', () => {
     const emit = jest.fn(() => ({ defaultPrevented: false }));
     const navigate = jest.fn();
     const props = {
@@ -255,11 +282,11 @@ describe('AppTabBar', () => {
         index: 0,
         key: 'tabs',
         preloadedRouteKeys: [],
-        routeNames: ['index', 'category', 'shopping-bag'],
+        routeNames: ['index', 'category', 'shop'],
         routes: [
           { key: 'index-key', name: 'index', params: undefined },
           { key: 'category-key', name: 'category', params: undefined },
-          { key: 'shopping-bag-key', name: 'shopping-bag', params: undefined },
+          { key: 'shop-key', name: 'shop', params: undefined },
         ],
         stale: false,
         type: 'tab',
@@ -271,9 +298,132 @@ describe('AppTabBar', () => {
 
     expect(emit).toHaveBeenCalledWith({
       canPreventDefault: true,
-      target: 'shopping-bag-key',
+      target: 'shop-key',
       type: 'tabPress',
     });
-    expect(navigate).toHaveBeenCalledWith('shopping-bag');
+    expect(navigate).toHaveBeenCalledWith('shop');
+  });
+
+  it('selects and opens the wishlist tab', () => {
+    mockUsePathname.mockReturnValue('/wishlist');
+    const emit = jest.fn(() => ({ defaultPrevented: false }));
+    const navigate = jest.fn();
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit, navigate },
+      state: {
+        history: [],
+        index: 3,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'shopping-bag', 'wishlist'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'shopping-bag-key', name: 'shopping-bag', params: undefined },
+          { key: 'wishlist-key', name: 'wishlist', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { getByLabelText } = render(<AppTabBar {...props} />);
+
+    expect(getByLabelText('Wishlist tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/');
+    const { getByLabelText: getHomeLabel } = render(<AppTabBar {...props} />);
+    fireEvent.press(getHomeLabel('Wishlist tab'));
+
+    expect(emit).toHaveBeenCalledWith({
+      canPreventDefault: true,
+      target: 'wishlist-key',
+      type: 'tabPress',
+    });
+    expect(navigate).toHaveBeenCalledWith('wishlist');
+  });
+
+  it('selects and opens the account tab', () => {
+    mockUsePathname.mockReturnValue('/profile');
+    const emit = jest.fn(() => ({ defaultPrevented: false }));
+    const navigate = jest.fn();
+    const props = {
+      descriptors: {},
+      insets: { bottom: 0, left: 0, right: 0, top: 0 },
+      navigation: { emit, navigate },
+      state: {
+        history: [],
+        index: 4,
+        key: 'tabs',
+        preloadedRouteKeys: [],
+        routeNames: ['index', 'category', 'shop', 'wishlist', 'profile'],
+        routes: [
+          { key: 'index-key', name: 'index', params: undefined },
+          { key: 'category-key', name: 'category', params: undefined },
+          { key: 'shop-key', name: 'shop', params: undefined },
+          { key: 'wishlist-key', name: 'wishlist', params: undefined },
+          { key: 'profile-key', name: 'profile', params: undefined },
+        ],
+        stale: false,
+        type: 'tab',
+      },
+    } as unknown as NavigationBottomTabBarProps;
+    const { getByLabelText } = render(<AppTabBar {...props} />);
+
+    expect(getByLabelText('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/orders-returns');
+    const { getByLabelText: getOrdersLabel } = render(<AppTabBar {...props} />);
+    expect(getOrdersLabel('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/track-order');
+    const { getByLabelText: getTrackingLabel } = render(<AppTabBar {...props} />);
+    expect(getTrackingLabel('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/coupons-offers');
+    const { getByLabelText: getCouponsLabel } = render(<AppTabBar {...props} />);
+    expect(getCouponsLabel('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/saved-cards');
+    const { getByLabelText: getSavedCardsLabel } = render(<AppTabBar {...props} />);
+    expect(getSavedCardsLabel('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/rate-review');
+    const { getByLabelText: getRateReviewLabel } = render(<AppTabBar {...props} />);
+    expect(getRateReviewLabel('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/return-exchange');
+    const { getByLabelText: getReturnExchangeLabel } = render(<AppTabBar {...props} />);
+    expect(getReturnExchangeLabel('Account tab')).toHaveAccessibilityState({ selected: true });
+
+    mockUsePathname.mockReturnValue('/return-exchange-method');
+    const { getByLabelText: getReturnExchangeMethodLabel } = render(<AppTabBar {...props} />);
+    expect(getReturnExchangeMethodLabel('Account tab')).toHaveAccessibilityState({
+      selected: true,
+    });
+
+    mockUsePathname.mockReturnValue('/return-exchange-review');
+    const { getByLabelText: getReturnExchangeReviewLabel } = render(<AppTabBar {...props} />);
+    expect(getReturnExchangeReviewLabel('Account tab')).toHaveAccessibilityState({
+      selected: true,
+    });
+
+    mockUsePathname.mockReturnValue('/return-exchange-success');
+    const { getByLabelText: getReturnExchangeSuccessLabel } = render(<AppTabBar {...props} />);
+    expect(getReturnExchangeSuccessLabel('Account tab')).toHaveAccessibilityState({
+      selected: true,
+    });
+
+    mockUsePathname.mockReturnValue('/');
+    const { getByLabelText: getHomeLabel } = render(<AppTabBar {...props} />);
+    fireEvent.press(getHomeLabel('Account tab'));
+
+    expect(emit).toHaveBeenCalledWith({
+      canPreventDefault: true,
+      target: 'profile-key',
+      type: 'tabPress',
+    });
+    expect(navigate).toHaveBeenCalledWith('profile');
   });
 });

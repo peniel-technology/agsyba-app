@@ -3,6 +3,8 @@ export const gradients = {
   hero: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.58)'] as const,
   promotionalBanner: ['rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.8)'] as const,
   saleBanner: ['rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 0.9)'] as const,
+  savedCardDark: ['#18181B', '#171717'] as const,
+  savedCardGold: ['#713F12', '#292524'] as const,
   styleCard: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)'] as const,
 } as const;
 

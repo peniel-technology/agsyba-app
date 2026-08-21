@@ -24,5 +24,9 @@
     --color-success: 59 122 87;
     --color-success-surface: 240 253 244;
     --color-error: 220 38 38;
+    --color-order-action: 239 68 68;
+    --color-order-background: 245 245 245;
+    --color-order-delivered: 22 163 74;
+    --color-order-shipped: 59 130 246;
   }
 }

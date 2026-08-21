@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { Screen, SidebarDrawer, TabPageContent, TopNavbar } from '@/components/layouts';
-import { ProductSearchModal } from '@/components/modals/ProductSearchModal';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductSlider } from '@/components/product/ProductSlider';
 import { routes } from '@/constants/routes';
@@ -16,7 +15,6 @@ import { ShoppingBenefits } from '@/features/home/components/ShoppingBenefits';
 import { ShopByStyle } from '@/features/home/components/ShopByStyle';
 import { allCollections } from '@/features/home/constants/allCollections';
 import { flashSale } from '@/features/home/constants/flashSale';
-import { homeSearchProducts } from '@/features/home/constants/homeSearchProducts';
 import { heroSlides } from '@/features/home/constants/heroSlides';
 import { mostPopularProducts } from '@/features/home/constants/mostPopularProducts';
 import { newArrivals } from '@/features/home/constants/newArrivals';
@@ -26,32 +24,31 @@ import { shopCategories } from '@/features/home/constants/shopCategories';
 import { shoppingBenefits } from '@/features/home/constants/shoppingBenefits';
 import { styleCategories } from '@/features/home/constants/styleCategories';
 import { trendingFootwear } from '@/features/home/constants/trendingFootwear';
+import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { useTabPageLoader } from '@/hooks/useTabPageLoader';
+import { useWishlist } from '@/features/wishlist/hooks/useWishlist';
 import { useCartStore } from '@/stores/useCartStore';
 import { useUiStore } from '@/stores/useUiStore';
 import type { DrawerItemId } from '@/types/drawer';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const closeDrawer = useUiStore((state) => state.closeDrawer);
   const addCartItem = useCartStore((state) => state.addItem);
   const cartItemCount = useCartStore((state) => state.itemCount);
   const isDrawerOpen = useUiStore((state) => state.isDrawerOpen);
   const openDrawer = useUiStore((state) => state.openDrawer);
+  const { bagProductIds, openBag } = useProductBagNavigation();
+  const { productIds: wishlistProductIds, toggleItem: toggleWishlistItem } = useWishlist();
   const isPageLoading = useTabPageLoader();
-  const closeSearch = useCallback(() => {
-    setIsSearchVisible(false);
-  }, []);
   const openSearch = useCallback(() => {
-    setIsSearchVisible(true);
-  }, []);
+    router.push({ params: { returnTo: routes.home }, pathname: routes.search });
+  }, [router]);
+  const openNotifications = useCallback(() => {
+    router.push({ params: { returnTo: routes.home }, pathname: routes.notifications });
+  }, [router]);
   const openProductDetail = useCallback(() => {
-    closeSearch();
     router.push(routes.productDetail);
-  }, [closeSearch, router]);
-  const openCart = useCallback(() => {
-    router.push(routes.shoppingBag);
   }, [router]);
   const handleDrawerItemPress = useCallback(
     (itemId: DrawerItemId) => {
@@ -64,6 +61,24 @@ export default function HomeScreen() {
 
       if (itemId === 'contact') {
         router.replace(routes.contact);
+        return;
+      }
+
+      if (itemId === 'wishlist') {
+        router.replace(routes.wishlist);
+        return;
+      }
+
+      if (itemId === 'account') {
+        router.replace(routes.profile);
+        return;
+      }
+
+      if (itemId === 'notifications') {
+        router.replace({
+          params: { returnTo: routes.home },
+          pathname: routes.notifications,
+        });
       }
     },
     [closeDrawer, router],
@@ -73,8 +88,9 @@ export default function HomeScreen() {
     <Screen includeBottomInset={false} padded={false}>
       <TopNavbar
         cartItemCount={cartItemCount}
-        onCartPress={openCart}
+        onCartPress={openBag}
         onMenuPress={openDrawer}
+        onNotificationsPress={openNotifications}
         onSearchPress={openSearch}
       />
       <TabPageContent isLoading={isPageLoading} loadingLabel="Loading home page">
@@ -91,18 +107,26 @@ export default function HomeScreen() {
           </View>
           <View className="mt-8">
             <ProductSlider
+              bagProductIds={bagProductIds}
               onAddToCartPress={addCartItem}
+              onFavoritePress={toggleWishlistItem}
+              onGoToBagPress={openBag}
               onProductPress={openProductDetail}
               products={newArrivals}
               title="New Arrivals"
+              wishlistProductIds={wishlistProductIds}
             />
           </View>
           <View className="mt-8">
             <ProductSlider
+              bagProductIds={bagProductIds}
               onAddToCartPress={addCartItem}
+              onFavoritePress={toggleWishlistItem}
+              onGoToBagPress={openBag}
               onProductPress={openProductDetail}
               products={mostPopularProducts}
               title="Most Popular Products"
+              wishlistProductIds={wishlistProductIds}
             />
           </View>
           <View className="mt-8">
@@ -110,10 +134,14 @@ export default function HomeScreen() {
           </View>
           <View className="mt-8">
             <ProductSlider
+              bagProductIds={bagProductIds}
               onAddToCartPress={addCartItem}
+              onFavoritePress={toggleWishlistItem}
+              onGoToBagPress={openBag}
               onProductPress={openProductDetail}
               products={trendingFootwear}
               title="Trending Footwear"
+              wishlistProductIds={wishlistProductIds}
             />
           </View>
           <View className="mt-8">
@@ -121,10 +149,14 @@ export default function HomeScreen() {
           </View>
           <View className="mt-8">
             <ProductGrid
+              bagProductIds={bagProductIds}
               onAddToCartPress={addCartItem}
+              onFavoritePress={toggleWishlistItem}
+              onGoToBagPress={openBag}
               onProductPress={openProductDetail}
               products={allCollections}
               title="All Collections"
+              wishlistProductIds={wishlistProductIds}
             />
           </View>
           <View className="mt-8">
@@ -136,13 +168,6 @@ export default function HomeScreen() {
         isOpen={isDrawerOpen}
         onClose={closeDrawer}
         onItemPress={handleDrawerItemPress}
-      />
-      <ProductSearchModal
-        isVisible={isSearchVisible}
-        onAddToCartPress={addCartItem}
-        onClose={closeSearch}
-        onProductPress={openProductDetail}
-        products={homeSearchProducts}
       />
     </Screen>
   );

@@ -7,7 +7,7 @@ import { colors, iconSizes, iconStrokeWidths } from '@/theme';
 interface ProductAddToCartButtonProps {
   accessibilityLabel: string;
   disabled?: boolean;
-  label?: 'Add to Bag' | 'Go to Bag';
+  label?: 'Add to Bag' | 'Add to Cart' | 'Go to Bag';
   onPress?: () => void;
 }
 

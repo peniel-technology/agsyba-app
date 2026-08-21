@@ -1,15 +1,23 @@
 import type { BottomTabBarProps as NavigationBottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { usePathname } from 'expo-router';
+import { useLocalSearchParams, usePathname } from 'expo-router';
 
 import { BottomTabBar, type BottomTabId } from '@/components/layouts/BottomTabBar';
 import { routes } from '@/constants/routes';
 
-const enabledTabs = ['home', 'category', 'shop'] as const satisfies readonly BottomTabId[];
+const enabledTabs = [
+  'home',
+  'category',
+  'shop',
+  'wishlist',
+  'account',
+] as const satisfies readonly BottomTabId[];
 
 const routeNames = {
   category: 'category',
   home: 'index',
-  shop: 'shopping-bag',
+  shop: 'shop',
+  wishlist: 'wishlist',
+  account: 'profile',
 } as const;
 
 function isCategoryPath(pathname: string): boolean {
@@ -27,24 +35,95 @@ function isCategoryPath(pathname: string): boolean {
   );
 }
 
-export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
-  const pathname = usePathname();
-
-  if (pathname === routes.productFilters) {
-    return null;
+function getSearchTab(returnTo: string | undefined): BottomTabId {
+  if (returnTo === routes.home) {
+    return 'home';
   }
 
-  const activeTab: BottomTabId =
+  if (returnTo === routes.shop || returnTo === routes.shoppingBag) {
+    return 'shop';
+  }
+
+  if (returnTo === routes.wishlist) {
+    return 'wishlist';
+  }
+
+  if (
+    returnTo === routes.profile ||
+    returnTo === routes.ordersReturns ||
+    returnTo === routes.notifications ||
+    returnTo === routes.savedCards
+  ) {
+    return 'account';
+  }
+
+  return 'category';
+}
+
+function getActiveTab(pathname: string, searchReturnTo: string | undefined): BottomTabId {
+  if (pathname === routes.search) {
+    return getSearchTab(searchReturnTo);
+  }
+
+  if (
+    pathname === routes.profile ||
+    pathname === routes.ordersReturns ||
+    pathname === routes.notifications ||
+    pathname === routes.trackOrder ||
+    pathname === routes.couponsOffers ||
+    pathname === routes.rateReview ||
+    pathname === routes.returnExchange ||
+    pathname === routes.returnExchangeMethod ||
+    pathname === routes.returnExchangeReview ||
+    pathname === routes.returnExchangeSuccess ||
+    pathname === routes.savedCards
+  ) {
+    return 'account';
+  }
+
+  if (pathname === routes.wishlist) {
+    return 'wishlist';
+  }
+
+  if (
+    pathname === routes.shop ||
     pathname === routes.shoppingBag ||
     pathname === routes.deliveryAddress ||
     pathname === routes.payment ||
     pathname === routes.orderSuccess
-      ? 'shop'
-      : isCategoryPath(pathname)
-        ? 'category'
-        : 'home';
+  ) {
+    return 'shop';
+  }
+
+  if (isCategoryPath(pathname)) {
+    return 'category';
+  }
+
+  return 'home';
+}
+
+export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
+  const pathname = usePathname();
+  const params = useLocalSearchParams<{ returnTo?: string | string[] }>();
+  const searchReturnTo = Array.isArray(params.returnTo) ? params.returnTo[0] : params.returnTo;
+
+  if (
+    pathname === routes.login ||
+    pathname === routes.productFilters ||
+    pathname === routes.register
+  ) {
+    return null;
+  }
+
+  const activeTab = getActiveTab(pathname, searchReturnTo);
   const handleTabPress = (tab: BottomTabId) => {
-    if (tab !== 'home' && tab !== 'category' && tab !== 'shop') {
+    if (
+      tab !== 'home' &&
+      tab !== 'category' &&
+      tab !== 'shop' &&
+      tab !== 'wishlist' &&
+      tab !== 'account'
+    ) {
       return;
     }
 

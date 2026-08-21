@@ -6,10 +6,17 @@ import { colors, iconSizes, iconStrokeWidths, spacing } from '@/theme';
 
 interface PageHeaderProps {
   onBackPress?: () => void;
+  onRightActionPress?: () => void;
+  rightActionLabel?: string;
   title: string;
 }
 
-export function PageHeader({ onBackPress, title }: PageHeaderProps) {
+export function PageHeader({
+  onBackPress,
+  onRightActionPress,
+  rightActionLabel,
+  title,
+}: PageHeaderProps) {
   return (
     <View
       accessibilityRole="header"
@@ -34,6 +41,20 @@ export function PageHeader({ onBackPress, title }: PageHeaderProps) {
       <View pointerEvents="none" className="absolute inset-x-0 items-center justify-center">
         <Text variant="bodyStrong">{title}</Text>
       </View>
+      {rightActionLabel ? (
+        <Pressable
+          accessibilityLabel={rightActionLabel}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !onRightActionPress }}
+          className="absolute right-2 rounded-full px-2 py-1 active:bg-subtle-surface disabled:opacity-50"
+          disabled={!onRightActionPress}
+          onPress={onRightActionPress}
+        >
+          <Text tone="orderAction" variant="label">
+            {rightActionLabel}
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }

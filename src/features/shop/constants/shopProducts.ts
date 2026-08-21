@@ -1,0 +1,68 @@
+import floralDressImage from '@/assets/images/shop/product-floral.webp';
+import bootsImage from '@/assets/images/shop/product-boots.webp';
+import pleatedDressImage from '@/assets/images/shop/product-pleated.webp';
+import wrapDressImage from '@/assets/images/shop/product-wrap.webp';
+import type { ProductPreview } from '@/types/product';
+
+export const shopProducts = [
+  {
+    bestPrice: { amount: 79, currency: 'AED' },
+    brand: 'H&M',
+    deliveryLabel: 'Delivery by Jul 22',
+    discountPercentage: 20,
+    id: 'hm-linen-blend-wrap-dress',
+    image: wrapDressImage,
+    imageAccessibilityLabel: 'Woman wearing a rust linen-blend wrap dress',
+    imageFit: 'cover',
+    isFavorite: false,
+    name: 'Linen-Blend Wrap Dress',
+    price: { amount: 99, currency: 'AED' },
+    rating: 4.2,
+    reviewCount: 94,
+  },
+  {
+    bestPrice: { amount: 116, currency: 'AED' },
+    brand: 'ZARA',
+    deliveryLabel: 'Delivery by Jul 21',
+    discountPercentage: 30,
+    id: 'zara-pleated-midi-dress',
+    image: pleatedDressImage,
+    imageAccessibilityLabel: 'Woman wearing a sage green pleated midi dress',
+    imageFit: 'cover',
+    isFavorite: false,
+    name: 'Pleated Chiffon Midi Dress',
+    price: { amount: 145, currency: 'AED' },
+    rating: 4.5,
+    reviewCount: 128,
+  },
+  {
+    bestPrice: { amount: 96, currency: 'AED' },
+    brand: 'MANGO',
+    deliveryLabel: 'Delivery by Jul 23',
+    discountPercentage: 15,
+    id: 'mango-floral-tiered-dress',
+    image: floralDressImage,
+    imageAccessibilityLabel: 'Woman wearing a floral tiered maxi dress',
+    imageFit: 'cover',
+    isFavorite: false,
+    name: 'Floral Tiered Maxi Dress',
+    price: { amount: 120, currency: 'AED' },
+    rating: 4.7,
+    reviewCount: 156,
+  },
+  {
+    bestPrice: { amount: 151, currency: 'AED' },
+    brand: 'NIKE',
+    deliveryLabel: 'Delivery by Jul 24',
+    discountPercentage: 25,
+    id: 'nike-air-max-270-sneaker',
+    image: bootsImage,
+    imageAccessibilityLabel: 'Pair of brown leather ankle boots',
+    imageFit: 'cover',
+    isFavorite: false,
+    name: 'Air Max 270 Sneaker',
+    price: { amount: 189, currency: 'AED' },
+    rating: 4.3,
+    reviewCount: 72,
+  },
+] as const satisfies readonly ProductPreview[];

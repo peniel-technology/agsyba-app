@@ -29,6 +29,10 @@ module.exports = {
         success: 'rgb(var(--color-success) / <alpha-value>)',
         'success-surface': 'rgb(var(--color-success-surface) / <alpha-value>)',
         error: 'rgb(var(--color-error) / <alpha-value>)',
+        'order-action': 'rgb(var(--color-order-action) / <alpha-value>)',
+        'order-background': 'rgb(var(--color-order-background) / <alpha-value>)',
+        'order-delivered': 'rgb(var(--color-order-delivered) / <alpha-value>)',
+        'order-shipped': 'rgb(var(--color-order-shipped) / <alpha-value>)',
       },
       fontFamily: {
         manrope: ['Manrope_400Regular'],

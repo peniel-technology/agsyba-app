@@ -8,10 +8,10 @@ import { ShoppingBagHeader } from '@/components/cart/ShoppingBagHeader';
 import type { ProductPreview } from '@/types/product';
 
 jest.mock('lucide-react-native', () => ({
-  ArrowRight: 'ArrowRight',
   Bell: 'Bell',
   Check: 'Check',
   ChevronLeft: 'ChevronLeft',
+  FileText: 'FileText',
   Minus: 'Minus',
   Plus: 'Plus',
   Search: 'Search',

@@ -10,6 +10,7 @@ import type { ProductPreview } from '@/types/product';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 interface ProductCardProps {
+  addToCartLabel?: 'Add to Bag' | 'Add to Cart';
   cardWidth?: number;
   isInBag?: boolean;
   onAddToCartPress?: (product: ProductPreview) => void;
@@ -18,6 +19,7 @@ interface ProductCardProps {
   onPress?: (product: ProductPreview) => void;
   product: ProductPreview;
   showAddToCartButton?: boolean;
+  showReviewCount?: boolean;
 }
 
 function formatDiscount(discountPercentage: number): string {
@@ -31,6 +33,7 @@ const styles = StyleSheet.create({
 });
 
 export const ProductCard = memo(function ProductCard({
+  addToCartLabel = 'Add to Bag',
   cardWidth,
   isInBag = false,
   onAddToCartPress,
@@ -39,6 +42,7 @@ export const ProductCard = memo(function ProductCard({
   onPress,
   product,
   showAddToCartButton = true,
+  showReviewCount = false,
 }: ProductCardProps) {
   const productAccessibilityLabel = `Open ${product.brand} ${product.name}`;
   const hasBestPrice = product.bestPrice.amount < product.price.amount;
@@ -87,6 +91,12 @@ export const ProductCard = memo(function ProductCard({
               size={spacing[2]}
               strokeWidth={iconStrokeWidths.subtle}
             />
+            {showReviewCount ? (
+              <>
+                <View className="mx-1 h-2.5 w-px bg-border" />
+                <Text variant="micro">{product.reviewCount}</Text>
+              </>
+            ) : null}
           </View>
         </View>
 
@@ -130,7 +140,7 @@ export const ProductCard = memo(function ProductCard({
               isInBag ? `Go to shopping bag for ${product.name}` : `Add ${product.name} to bag`
             }
             disabled={isInBag ? !onGoToBagPress : !onAddToCartPress}
-            label={isInBag ? 'Go to Bag' : 'Add to Bag'}
+            label={isInBag ? 'Go to Bag' : addToCartLabel}
             onPress={
               isInBag
                 ? onGoToBagPress

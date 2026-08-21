@@ -3,9 +3,7 @@ import { useCallback, useState } from 'react';
 import { Alert, ScrollView, Share, View } from 'react-native';
 
 import { CollectionPageHeader, Screen } from '@/components/layouts';
-import { ProductSearchModal } from '@/components/modals/ProductSearchModal';
 import { routes } from '@/constants/routes';
-import { homeSearchProducts } from '@/features/home/constants/homeSearchProducts';
 import { ProductBestOffers } from '@/features/products/components/detail/ProductBestOffers';
 import { ProductBreadcrumbs } from '@/features/products/components/detail/ProductBreadcrumbs';
 import { ProductColorSelector } from '@/features/products/components/detail/ProductColorSelector';
@@ -28,38 +26,31 @@ import {
   recentlyViewedProducts,
   youMayAlsoLikeProducts,
 } from '@/features/products/constants/productDetailRecommendations';
+import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
 import { useCartStore } from '@/stores/useCartStore';
+import { useWishlist } from '@/features/wishlist/hooks/useWishlist';
 import type { ProductPreview } from '@/types/product';
-
-const productSearchProducts = [
-  blushFloralWrapMidiDressPreview,
-  ...homeSearchProducts,
-] satisfies readonly ProductPreview[];
 
 export default function ProductDetailScreen() {
   const router = useRouter();
   const addCartItem = useCartStore((state) => state.addItem);
   const cartItemCount = useCartStore((state) => state.itemCount);
-  const isProductInBag = useCartStore(
-    (state) => state.items[blushFloralWrapMidiDressPreview.id] !== undefined,
-  );
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const { bagProductIds, openBag } = useProductBagNavigation();
+  const { productIds: wishlistProductIds, toggleItem: toggleWishlistItem } = useWishlist();
+  const isProductInBag = bagProductIds.has(blushFloralWrapMidiDressPreview.id);
+  const isFavorite = wishlistProductIds.has(blushFloralWrapMidiDressPreview.id);
   const [quantity, setQuantity] = useState(1);
   const [selectedColorId, setSelectedColorId] = useState('beige');
   const [selectedSize, setSelectedSize] = useState('M');
-  const closeSearch = useCallback(() => {
-    setIsSearchVisible(false);
-  }, []);
   const openSearch = useCallback(() => {
-    setIsSearchVisible(true);
-  }, []);
+    router.push({ params: { returnTo: routes.productDetail }, pathname: routes.search });
+  }, [router]);
   const handleBackPress = useCallback(() => {
     router.back();
   }, [router]);
   const toggleFavorite = useCallback(() => {
-    setIsFavorite((currentValue) => !currentValue);
-  }, []);
+    toggleWishlistItem(blushFloralWrapMidiDressPreview);
+  }, [toggleWishlistItem]);
   const shareProduct = useCallback(async () => {
     try {
       await Share.share({
@@ -73,9 +64,6 @@ export default function ProductDetailScreen() {
   const addToBag = useCallback(() => {
     addCartItem(blushFloralWrapMidiDressPreview, quantity);
   }, [addCartItem, quantity]);
-  const openBag = useCallback(() => {
-    router.push(routes.shoppingBag);
-  }, [router]);
   const openSizeGuide = useCallback(() => {
     Alert.alert('Size Guide', 'XS: 6 · S: 8 · M: 10 · L: 12 · XL: 14');
   }, []);
@@ -161,29 +149,29 @@ export default function ProductDetailScreen() {
             seller={blushFloralWrapMidiDress.seller}
           />
           <ProductRecommendationSlider
+            bagProductIds={bagProductIds}
             onAddToCartPress={addRecommendedProductToCart}
+            onFavoritePress={toggleWishlistItem}
+            onGoToBagPress={openBag}
             onProductPress={openRecommendedProduct}
             onViewAllPress={viewAllRecommendations}
             products={youMayAlsoLikeProducts}
             title="You May Also Like"
+            wishlistProductIds={wishlistProductIds}
           />
           <ProductRecommendationSlider
+            bagProductIds={bagProductIds}
             onAddToCartPress={addRecommendedProductToCart}
+            onFavoritePress={toggleWishlistItem}
+            onGoToBagPress={openBag}
             onProductPress={openRecommendedProduct}
             onViewAllPress={viewAllRecentlyViewed}
             products={recentlyViewedProducts}
             title="Recently Viewed"
+            wishlistProductIds={wishlistProductIds}
           />
         </View>
       </ScrollView>
-
-      <ProductSearchModal
-        isVisible={isSearchVisible}
-        onAddToCartPress={addCartItem}
-        onClose={closeSearch}
-        onProductPress={closeSearch}
-        products={productSearchProducts}
-      />
     </Screen>
   );
 }

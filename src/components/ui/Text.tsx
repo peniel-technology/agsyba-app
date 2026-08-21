@@ -22,7 +22,16 @@ interface TextProps extends ComponentProps<typeof NativeText> {
     | 'micro'
     | 'microStrong'
     | 'overline';
-  tone?: 'default' | 'muted' | 'brand' | 'brandForeground' | 'error' | 'sale' | 'success';
+  tone?:
+    | 'default'
+    | 'muted'
+    | 'primary'
+    | 'brand'
+    | 'brandForeground'
+    | 'error'
+    | 'orderAction'
+    | 'sale'
+    | 'success';
 }
 
 export function Text({ variant = 'body', tone = 'default', className = '', ...props }: TextProps) {
@@ -50,9 +59,11 @@ export function Text({ variant = 'body', tone = 'default', className = '', ...pr
   const toneClassName = {
     default: 'text-foreground',
     muted: 'text-muted',
+    primary: 'text-primary',
     brand: 'text-brand',
     brandForeground: 'text-brand-foreground',
     error: 'text-error',
+    orderAction: 'text-order-action',
     sale: 'text-sale',
     success: 'text-success',
   }[tone];

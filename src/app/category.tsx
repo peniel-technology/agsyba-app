@@ -28,6 +28,12 @@ export default function CategoryScreen() {
   const openCart = useCallback(() => {
     router.push(routes.shoppingBag);
   }, [router]);
+  const openSearch = useCallback(() => {
+    router.push({ params: { returnTo: routes.category }, pathname: routes.search });
+  }, [router]);
+  const openNotifications = useCallback(() => {
+    router.push({ params: { returnTo: routes.category }, pathname: routes.notifications });
+  }, [router]);
   const handleCategoryPress = useCallback(
     (category: BrowseCategory) => {
       if (category.href) {
@@ -47,6 +53,24 @@ export default function CategoryScreen() {
 
       if (itemId === 'contact') {
         router.replace(routes.contact);
+        return;
+      }
+
+      if (itemId === 'wishlist') {
+        router.replace(routes.wishlist);
+        return;
+      }
+
+      if (itemId === 'account') {
+        router.replace(routes.profile);
+        return;
+      }
+
+      if (itemId === 'notifications') {
+        router.replace({
+          params: { returnTo: routes.category },
+          pathname: routes.notifications,
+        });
       }
     },
     [closeDrawer, router],
@@ -54,7 +78,13 @@ export default function CategoryScreen() {
 
   return (
     <Screen includeBottomInset={false} padded={false}>
-      <TopNavbar cartItemCount={cartItemCount} onCartPress={openCart} onMenuPress={openDrawer} />
+      <TopNavbar
+        cartItemCount={cartItemCount}
+        onCartPress={openCart}
+        onMenuPress={openDrawer}
+        onNotificationsPress={openNotifications}
+        onSearchPress={openSearch}
+      />
       <TabPageContent isLoading={isPageLoading} loadingLabel="Loading category page">
         <ScrollView
           className="flex-1"

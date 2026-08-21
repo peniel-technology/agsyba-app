@@ -11,19 +11,27 @@ import { colors, iconSizes, iconStrokeWidths, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
 interface ProductSearchModalProps {
+  bagProductIds?: ReadonlySet<string>;
   isVisible: boolean;
   onAddToCartPress?: (product: ProductPreview) => void;
   onClose: () => void;
+  onFavoritePress?: (product: ProductPreview) => void;
+  onGoToBagPress?: () => void;
   onProductPress?: (product: ProductPreview) => void;
   products: readonly ProductPreview[];
+  wishlistProductIds?: ReadonlySet<string>;
 }
 
 export function ProductSearchModal({
+  bagProductIds,
   isVisible,
   onAddToCartPress,
   onClose,
+  onFavoritePress,
+  onGoToBagPress,
   onProductPress,
   products,
+  wishlistProductIds,
 }: ProductSearchModalProps) {
   const [query, setQuery] = useState('');
   const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -87,11 +95,15 @@ export function ProductSearchModal({
         >
           {filteredProducts.length > 0 ? (
             <ProductGrid
+              bagProductIds={bagProductIds}
               onAddToCartPress={onAddToCartPress}
+              onFavoritePress={onFavoritePress}
+              onGoToBagPress={onGoToBagPress}
               onProductPress={onProductPress}
               products={filteredProducts}
               showHeader={false}
               title="Search Results"
+              wishlistProductIds={wishlistProductIds}
             />
           ) : (
             <View className="px-4 py-8">

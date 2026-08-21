@@ -1,4 +1,4 @@
-import { ArrowRight, ShoppingBag } from 'lucide-react-native';
+import { FileText } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
@@ -14,34 +14,39 @@ export function ShoppingBagEmptyState({
   onShopNowPress,
 }: ShoppingBagEmptyStateProps) {
   return (
-    <View className="items-center gap-7 px-6 py-10">
-      <View className="size-24 items-center justify-center rounded-full bg-subtle-surface">
-        <ShoppingBag
-          color={colors.muted}
-          size={iconSizes.extraLarge}
-          strokeWidth={iconStrokeWidths.subtle}
+    <View className="items-center gap-7 px-6 pb-10 pt-10">
+      <View
+        accessibilityLabel="Empty shopping cart"
+        accessibilityRole="image"
+        className="size-24 items-center justify-center rounded-full bg-subtle-surface"
+      >
+        <FileText
+          accessible={false}
+          color={colors.neutral400}
+          size={iconSizes.emptyState}
+          strokeWidth={iconStrokeWidths.standard}
         />
       </View>
 
-      <View className="items-center gap-3">
-        <Text className="text-center text-3xl leading-9" variant="sectionHeading">
+      <View className="items-center gap-3 self-stretch">
+        <Text className="self-stretch text-center" variant="promotionalTitle">
           Your Cart is Empty
         </Text>
-        <Text className="text-center text-sm leading-5" tone="muted" variant="caption">
+        <Text className="self-stretch text-center text-sm leading-5" tone="muted" variant="body">
           Looks like you haven&apos;t added anything yet. Explore and find something you love!
         </Text>
       </View>
 
-      <View className="h-0.5 w-10 bg-brand" />
+      <View className="h-0.5 w-10 bg-order-action" />
 
-      <View className="w-full items-center gap-4">
+      <View className="items-center gap-4 self-stretch">
         <Pressable
           accessibilityLabel="Shop now"
           accessibilityRole="button"
-          className="w-full items-center justify-center rounded-sm bg-brand px-6 py-3.5 active:opacity-80"
+          className="self-stretch items-center justify-center rounded-sm bg-order-action px-6 py-3.5 active:opacity-80"
           onPress={onShopNowPress}
         >
-          <Text className="uppercase" tone="brandForeground" variant="label">
+          <Text className="font-manrope-bold uppercase" tone="brandForeground" variant="label">
             Shop Now
           </Text>
         </Pressable>
@@ -49,17 +54,12 @@ export function ShoppingBagEmptyState({
         <Pressable
           accessibilityLabel="Continue shopping"
           accessibilityRole="button"
-          className="min-h-10 flex-row items-center justify-center gap-1 active:opacity-70"
+          className="rounded-sm px-2 py-1 active:opacity-70"
           onPress={onContinueShoppingPress}
         >
-          <Text tone="brand" variant="label">
-            Continue Shopping
+          <Text className="font-manrope-semibold" tone="orderAction" variant="label">
+            Continue Shopping →
           </Text>
-          <ArrowRight
-            color={colors.brand}
-            size={iconSizes.small}
-            strokeWidth={iconStrokeWidths.emphasized}
-          />
         </Pressable>
       </View>
     </View>
