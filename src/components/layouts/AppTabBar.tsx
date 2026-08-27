@@ -3,6 +3,8 @@ import { useLocalSearchParams, usePathname } from 'expo-router';
 
 import { BottomTabBar, type BottomTabId } from '@/components/layouts/BottomTabBar';
 import { routes } from '@/constants/routes';
+import type { TabTransitionState } from '@/types/tabTransition';
+import { motion } from '@/theme';
 
 const enabledTabs = [
   'home',
@@ -76,6 +78,7 @@ function getActiveTab(pathname: string, searchReturnTo: string | undefined): Bot
     pathname === routes.returnExchangeMethod ||
     pathname === routes.returnExchangeReview ||
     pathname === routes.returnExchangeSuccess ||
+    pathname === routes.editProfile ||
     pathname === routes.savedCards
   ) {
     return 'account';
@@ -102,16 +105,22 @@ function getActiveTab(pathname: string, searchReturnTo: string | undefined): Bot
   return 'home';
 }
 
-export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
+interface AppTabBarProps extends NavigationBottomTabBarProps {
+  transitionState?: TabTransitionState;
+}
+
+export function AppTabBar({ navigation, state, transitionState }: AppTabBarProps) {
   const pathname = usePathname();
   const params = useLocalSearchParams<{ returnTo?: string | string[] }>();
   const searchReturnTo = Array.isArray(params.returnTo) ? params.returnTo[0] : params.returnTo;
-
-  if (
+  const isTabBarHidden =
+    pathname === routes.createNewPassword ||
+    pathname === routes.forgotPassword ||
     pathname === routes.login ||
     pathname === routes.productFilters ||
-    pathname === routes.register
-  ) {
+    pathname === routes.register;
+
+  if (isTabBarHidden) {
     return null;
   }
 
@@ -141,6 +150,30 @@ export function AppTabBar({ navigation, state }: NavigationBottomTabBarProps) {
     });
 
     if (!event.defaultPrevented) {
+      const currentRoute = state.routes[state.index];
+      const targetIndex = state.routes.findIndex((route) => route.key === targetRoute.key);
+
+      if (transitionState && currentRoute && targetIndex !== state.index) {
+        const isMovingForward = targetIndex > state.index;
+
+        if (transitionState.resetTimer !== null) {
+          clearTimeout(transitionState.resetTimer);
+        }
+
+        transitionState.current = {
+          fromKey: currentRoute.key,
+          incomingStart: isMovingForward ? 1 : -1,
+          outgoingEnd: isMovingForward ? -1 : 1,
+          toKey: targetRoute.key,
+        };
+        transitionState.resetTimer = setTimeout(() => {
+          if (transitionState.current?.toKey === targetRoute.key) {
+            transitionState.current = null;
+          }
+          transitionState.resetTimer = null;
+        }, motion.tabSlideTransitionMs + 32);
+      }
+
       navigation.navigate(routeName);
     }
   };

@@ -94,7 +94,7 @@ export default function DeliveryAddressScreen() {
   const handleDeliverHere = form.handleSubmit((values) => {
     Keyboard.dismiss();
     void router.push({
-      params: values,
+      params: { ...values, isDefault: values.isDefault ? 'true' : 'false' },
       pathname: routes.payment,
     });
   });

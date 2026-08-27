@@ -24,10 +24,6 @@ interface PaymentAddressParam {
   state?: string;
 }
 
-interface PaymentQueryParams extends PaymentAddressParam {
-  countryCallingCode?: string;
-}
-
 function getParam(value: string | string[] | undefined): string {
   if (Array.isArray(value)) {
     return value[0] ?? '';
@@ -53,7 +49,7 @@ const otherBanks = [
 
 export default function PaymentScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<PaymentQueryParams>();
+  const params = useLocalSearchParams();
   const { itemCount, total } = useCheckoutSummary();
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('card');

@@ -12,7 +12,6 @@ import { Screen } from '@/components/layouts';
 import { routes } from '@/constants/routes';
 import { aboutPageData } from '@/data/about';
 import { useCartStore } from '@/stores/useCartStore';
-
 export default function AboutScreen() {
   const router = useRouter();
   const cartItemCount = useCartStore((state) => state.itemCount);

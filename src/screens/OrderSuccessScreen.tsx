@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 
 import { Screen } from '@/components/layouts';
 import { DeliveryCard } from '@/components/order-success/DeliveryCard';
@@ -54,7 +54,7 @@ export default function OrderSuccessScreen() {
         return;
       }
 
-      router.push(link.href);
+      router.push(link.href as Href);
     },
     [router, supportLinks],
   );

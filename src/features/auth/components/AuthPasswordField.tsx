@@ -14,6 +14,7 @@ interface AuthPasswordFieldProps extends Omit<
   label: string;
   onChangeText: (value: string) => void;
   onToggleVisibility: () => void;
+  showErrorBorder?: boolean;
   value: string;
 }
 
@@ -23,6 +24,7 @@ export function AuthPasswordField({
   label,
   onChangeText,
   onToggleVisibility,
+  showErrorBorder = false,
   value,
   ...props
 }: AuthPasswordFieldProps) {
@@ -30,9 +32,10 @@ export function AuthPasswordField({
     <View className="gap-2">
       <Text variant="captionStrong">{label}</Text>
       <View
-        className={`min-h-12 flex-row items-center gap-3 rounded-sm border bg-surface px-4 py-3 ${error ? 'border-error' : 'border-border'}`}
+        className={`min-h-12 flex-row items-center gap-3 rounded-sm border bg-surface px-4 py-3 ${error && showErrorBorder ? 'border-error' : 'border-border'}`}
       >
         <TextInput
+          accessibilityHint={error}
           accessibilityLabel={label}
           autoCapitalize="none"
           className="min-h-6 flex-1 py-0 font-manrope text-sm text-foreground"
@@ -68,11 +71,6 @@ export function AuthPasswordField({
           )}
         </Pressable>
       </View>
-      {error ? (
-        <Text accessibilityRole="alert" tone="error" variant="detail">
-          {error}
-        </Text>
-      ) : null}
     </View>
   );
 }

@@ -1,6 +1,7 @@
 export interface ApiErrorPayload {
-  message: string;
-  status: number;
+  error?: string;
+  message?: string;
+  status?: number;
 }
 
 export interface ApiResponse<TData> {

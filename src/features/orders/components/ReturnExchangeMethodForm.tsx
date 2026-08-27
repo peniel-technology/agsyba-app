@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { Text } from '@/components/ui/Text';
 import { ReturnMethodCards } from '@/features/orders/components/ReturnMethodCards';
 import { ReturnPickupAddressCard } from '@/features/orders/components/ReturnPickupAddressCard';
@@ -15,6 +16,7 @@ import {
   returnExchangeMethodSchema,
   type ReturnExchangeMethodValues,
 } from '@/features/orders/schemas/returnExchangeMethodSchema';
+import { useThemedModal } from '@/hooks/useThemedModal';
 
 interface ReturnExchangeMethodFormProps {
   onBack: () => void;
@@ -22,6 +24,7 @@ interface ReturnExchangeMethodFormProps {
 }
 
 export function ReturnExchangeMethodForm({ onBack, onConfirm }: ReturnExchangeMethodFormProps) {
+  const { modalProps, openModal } = useThemedModal();
   const {
     control,
     formState: { errors },
@@ -38,20 +41,33 @@ export function ReturnExchangeMethodForm({ onBack, onConfirm }: ReturnExchangeMe
   const selectedMethod = useWatch({ control, name: 'method' });
 
   const handleDatePress = (onChange: (value: string) => void) => {
-    Alert.alert('Preferred Pickup Date', 'Choose a pickup date', [
-      { onPress: () => onChange('19 May 2024'), text: '19 May 2024' },
-      { onPress: () => onChange('20 May 2024'), text: '20 May 2024' },
-      { onPress: () => onChange('21 May 2024'), text: '21 May 2024' },
-      { style: 'cancel', text: 'Cancel' },
-    ]);
+    openModal({
+      actions: [
+        { label: '19 May 2024', onPress: () => onChange('19 May 2024') },
+        { label: '20 May 2024', onPress: () => onChange('20 May 2024') },
+        { label: '21 May 2024', onPress: () => onChange('21 May 2024') },
+        { label: 'Cancel', variant: 'secondary' },
+      ],
+      message: 'Choose a pickup date for your return.',
+      title: 'Preferred pickup date',
+      tone: 'info',
+    });
   };
 
   const handleEditAddress = () => {
-    Alert.alert('Edit Address', 'Address editing will be available soon.');
+    openModal({
+      message: 'Address editing will be available soon.',
+      title: 'Edit address',
+      tone: 'info',
+    });
   };
 
   const handleAddAddress = () => {
-    Alert.alert('Add New Address', 'Address management will be available soon.');
+    openModal({
+      message: 'Address management will be available soon.',
+      title: 'Add new address',
+      tone: 'info',
+    });
   };
 
   return (
@@ -132,6 +148,7 @@ export function ReturnExchangeMethodForm({ onBack, onConfirm }: ReturnExchangeMe
           </Text>
         </Pressable>
       </View>
+      <ThemedModal {...modalProps} />
     </View>
   );
 }

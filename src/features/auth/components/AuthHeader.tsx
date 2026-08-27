@@ -1,8 +1,7 @@
-import { ArrowLeft } from 'lucide-react-native';
+import Svg, { Path } from 'react-native-svg';
 import { Pressable, View } from 'react-native';
 
 import { AgsybaLogo } from '@/components/common/AgsybaLogo';
-import { colors, iconSizes, iconStrokeWidths } from '@/theme';
 
 interface AuthHeaderProps {
   onBackPress: () => void;
@@ -14,15 +13,17 @@ export function AuthHeader({ onBackPress }: AuthHeaderProps) {
       <Pressable
         accessibilityLabel="Go back"
         accessibilityRole="button"
-        className="size-6 items-center justify-center active:opacity-70"
+        className="h-6 w-[26px] items-center justify-center active:opacity-70"
         onPress={onBackPress}
       >
-        <ArrowLeft
-          accessible={false}
-          color={colors.text}
-          size={iconSizes.large}
-          strokeWidth={iconStrokeWidths.emphasized}
-        />
+        <Svg accessible={false} fill="none" height={24} viewBox="0 0 26 24" width={26}>
+          <Path
+            d="M11.8672 21L1.86719 12L11.8672 3"
+            stroke="#1A1A1A"
+            strokeLinecap="round"
+            strokeWidth={2.5}
+          />
+        </Svg>
       </Pressable>
       <View className="absolute inset-x-0 items-center">
         <AgsybaLogo height={16} width={112} />

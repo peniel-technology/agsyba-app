@@ -26,6 +26,7 @@ const config: ExpoConfig = {
       { backgroundColor: '#208AEF', image: './assets/images/splash-icon.png', imageWidth: 76 },
     ],
     'expo-secure-store',
+    ['expo-image-picker', { photosPermission: 'Allow AGSYBA to choose a profile photo.' }],
     [
       'expo-location',
       {
@@ -36,7 +37,9 @@ const config: ExpoConfig = {
   ],
   experiments: { typedRoutes: true, reactCompiler: true },
   extra: {
-    apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'https://api.example.com',
+    apiUrl: process.env.EXPO_PUBLIC_API_URL ?? 'https://agsyba.com',
+    medusaApiUrl: process.env.EXPO_PUBLIC_MEDUSA_API_URL ?? 'https://admin.agsyba.com',
+    defaultCountryCode: process.env.EXPO_PUBLIC_DEFAULT_REGION ?? 'ae',
     reverseGeocodingUrl: process.env.EXPO_PUBLIC_REVERSE_GEOCODING_URL ?? '',
     reverseGeocodingUserAgent: process.env.EXPO_PUBLIC_GEOCODING_USER_AGENT ?? '',
   },

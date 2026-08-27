@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { Text } from '@/components/ui/Text';
 import { ReviewCategoryRatings } from '@/features/reviews/components/ReviewCategoryRatings';
 import { ReviewPhotoUploader } from '@/features/reviews/components/ReviewPhotoUploader';
@@ -18,6 +19,7 @@ import {
   type ReviewPhoto,
 } from '@/features/reviews/constants/ratingReviewData';
 import { reviewSchema, type ReviewFormValues } from '@/features/reviews/schemas/reviewSchema';
+import { useThemedModal } from '@/hooks/useThemedModal';
 import { colors } from '@/theme';
 
 export interface ReviewSubmission {
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
 });
 
 export function ReviewForm({ onSubmit }: ReviewFormProps) {
+  const { modalProps, openModal } = useThemedModal();
   const {
     control,
     formState: { errors },
@@ -70,12 +73,14 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
   };
 
   const handleAddPhotos = () => {
-    Alert.alert(
-      'Add Photos',
-      photos.length >= 5
-        ? 'You can add up to 5 photos to a review.'
-        : 'Photo selection will be available when image uploads are connected.',
-    );
+    openModal({
+      message:
+        photos.length >= 5
+          ? 'You can add up to 5 photos to a review.'
+          : 'Photo selection will be available when image uploads are connected.',
+      title: 'Add photos',
+      tone: 'info',
+    });
   };
 
   const handleFormSubmit = (values: ReviewFormValues) => {
@@ -199,6 +204,7 @@ export function ReviewForm({ onSubmit }: ReviewFormProps) {
           Your review will be published after moderation
         </Text>
       </View>
+      <ThemedModal {...modalProps} />
     </View>
   );
 }

@@ -1,29 +1,46 @@
-import { Pencil, UserRound } from 'lucide-react-native';
+import { Pencil } from 'lucide-react-native';
 import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
-import { profileData } from '@/features/profile/constants/profileData';
 import { colors, iconSizes, iconStrokeWidths, spacing } from '@/theme';
+import type { Customer } from '@/types/customer';
+import { ProfileAvatar } from '@/features/profile/components/ProfileAvatar';
 
 interface ProfileHeroProps {
+  customer: Customer;
   onEditPress: () => void;
 }
 
-export function ProfileHero({ onEditPress }: ProfileHeroProps) {
+function getDisplayName(customer: Customer): string {
+  const name = [customer.first_name, customer.last_name]
+    .filter((value): value is string => Boolean(value?.trim()))
+    .join(' ');
+
+  return name || customer.email;
+}
+
+function getMemberSince(createdAt: string | null | undefined): string {
+  if (!createdAt) {
+    return 'AGSYBA member';
+  }
+
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) {
+    return 'AGSYBA member';
+  }
+
+  return `Member since ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+}
+
+export function ProfileHero({ customer, onEditPress }: ProfileHeroProps) {
   return (
     <View className="gap-4 border-b border-subtle-border bg-surface p-4">
       <View className="flex-row items-center gap-4">
-        <View className="size-16 items-center justify-center rounded-full bg-sale-surface">
-          <UserRound
-            color={colors.brand}
-            size={iconSizes.large}
-            strokeWidth={iconStrokeWidths.regular}
-          />
-        </View>
+        <ProfileAvatar customer={customer} />
         <View className="flex-1 gap-1">
-          <Text variant="title">{profileData.displayName}</Text>
+          <Text variant="title">{getDisplayName(customer)}</Text>
           <Text tone="muted" variant="caption">
-            {profileData.memberSince}
+            {getMemberSince(customer.created_at)}
           </Text>
         </View>
         <Pressable

@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react';
 import type { ListRenderItem } from 'react-native';
 import { FlatList, Pressable, View } from 'react-native';
 
+import { ProductCard } from '@/components/product/ProductCard';
 import { Text } from '@/components/ui/Text';
-import { ProductRecommendationCard } from '@/features/products/components/detail/ProductRecommendationCard';
 import { layout, spacing } from '@/theme';
 import type { ProductPreview } from '@/types/product';
 
@@ -64,18 +64,19 @@ export function ProductRecommendationSlider({
   }, []);
   const renderProduct = useCallback<ListRenderItem<ProductPreview>>(
     ({ item }) => (
-      <ProductRecommendationCard
-        isFavorite={
-          onFavoritePress
-            ? (wishlistProductIds?.has(item.id) ?? item.isFavorite)
-            : favoriteProductIds.has(item.id)
-        }
+      <ProductCard
         isInBag={bagProductIds?.has(item.id) ?? false}
         onAddToCartPress={onAddToCartPress}
         onFavoritePress={onFavoritePress ?? toggleFavorite}
         onGoToBagPress={onGoToBagPress ?? noopGoToBag}
-        onProductPress={onProductPress}
-        product={item}
+        onPress={onProductPress}
+        product={{
+          ...item,
+          isFavorite: onFavoritePress
+            ? (wishlistProductIds?.has(item.id) ?? item.isFavorite)
+            : favoriteProductIds.has(item.id),
+        }}
+        showReviewCount
       />
     ),
     [

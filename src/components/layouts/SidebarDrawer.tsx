@@ -11,9 +11,11 @@ import { DrawerPromotion } from '@/components/layouts/DrawerPromotion';
 import { Text } from '@/components/ui/Text';
 import { drawerMenuItems } from '@/constants/drawerMenuItems';
 import { colors, iconSizes, iconStrokeWidths, layout, motion, spacing } from '@/theme';
+import type { Customer } from '@/types/customer';
 import type { DrawerItemId } from '@/types/drawer';
 
 interface SidebarDrawerProps {
+  customer?: Customer | null;
   isOpen: boolean;
   onClose: () => void;
   onItemPress?: (itemId: DrawerItemId) => void;
@@ -23,6 +25,7 @@ interface SidebarDrawerProps {
 }
 
 export function SidebarDrawer({
+  customer,
   isOpen,
   onClose,
   onItemPress,
@@ -59,6 +62,11 @@ export function SidebarDrawer({
   const drawerStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: (progress.value - 1) * drawerWidth }],
   }));
+  const customerName = customer
+    ? [customer.first_name, customer.last_name]
+        .filter((value): value is string => Boolean(value?.trim()))
+        .join(' ') || customer.email
+    : 'Hello, Guest';
 
   return (
     <View
@@ -109,7 +117,7 @@ export function SidebarDrawer({
             showsVerticalScrollIndicator={false}
           >
             <Pressable
-              accessibilityLabel="Login or sign up"
+              accessibilityLabel={customer ? 'Open my account' : 'Login or sign up'}
               accessibilityRole="button"
               accessibilityState={{ disabled: !onLoginPress }}
               className="flex-row items-center gap-4 px-5 py-4 active:bg-subtle-surface"
@@ -125,9 +133,9 @@ export function SidebarDrawer({
                 />
               </View>
               <View className="gap-0.5">
-                <Text variant="bodyStrong">Hello, Guest</Text>
+                <Text variant="bodyStrong">{customerName}</Text>
                 <Text tone="brand" variant="captionMedium">
-                  Login / Sign up &gt;
+                  {customer ? 'My Account' : 'Login / Sign up'} &gt;
                 </Text>
               </View>
             </Pressable>
@@ -135,9 +143,11 @@ export function SidebarDrawer({
             <DrawerSearchForm onSubmit={onSearchSubmit} />
 
             <View>
-              {drawerMenuItems.map((item) => (
-                <DrawerMenuItem item={item} key={item.id} onPress={onItemPress} />
-              ))}
+              {drawerMenuItems.map((item) =>
+                item.id === 'logout' && !customer ? null : (
+                  <DrawerMenuItem item={item} key={item.id} onPress={onItemPress} />
+                ),
+              )}
             </View>
           </ScrollView>
 

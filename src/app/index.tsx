@@ -2,7 +2,8 @@ import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { Screen, SidebarDrawer, TabPageContent, TopNavbar } from '@/components/layouts';
+import { ThemedModal } from '@/components/modals/ThemedModal';
+import { Screen, SidebarDrawer, TopNavbar } from '@/components/layouts';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductSlider } from '@/components/product/ProductSlider';
 import { routes } from '@/constants/routes';
@@ -25,8 +26,10 @@ import { shoppingBenefits } from '@/features/home/constants/shoppingBenefits';
 import { styleCategories } from '@/features/home/constants/styleCategories';
 import { trendingFootwear } from '@/features/home/constants/trendingFootwear';
 import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
-import { useTabPageLoader } from '@/hooks/useTabPageLoader';
 import { useWishlist } from '@/features/wishlist/hooks/useWishlist';
+import { useLogout } from '@/features/auth/hooks/useLogout';
+import { useThemedModal } from '@/hooks/useThemedModal';
+import { useCurrentCustomer } from '@/queries/useCurrentCustomer';
 import { useCartStore } from '@/stores/useCartStore';
 import { useUiStore } from '@/stores/useUiStore';
 import type { DrawerItemId } from '@/types/drawer';
@@ -39,8 +42,14 @@ export default function HomeScreen() {
   const isDrawerOpen = useUiStore((state) => state.isDrawerOpen);
   const openDrawer = useUiStore((state) => state.openDrawer);
   const { bagProductIds, openBag } = useProductBagNavigation();
+  const { data: customer } = useCurrentCustomer();
   const { productIds: wishlistProductIds, toggleItem: toggleWishlistItem } = useWishlist();
-  const isPageLoading = useTabPageLoader();
+  const { modalProps, openModal } = useThemedModal();
+  const confirmLogout = useLogout(openModal);
+  const openAccount = useCallback(() => {
+    closeDrawer();
+    router.replace(customer ? routes.profile : routes.login);
+  }, [closeDrawer, customer, router]);
   const openSearch = useCallback(() => {
     router.push({ params: { returnTo: routes.home }, pathname: routes.search });
   }, [router]);
@@ -56,6 +65,11 @@ export default function HomeScreen() {
 
       if (itemId === 'about') {
         router.replace(routes.about);
+        return;
+      }
+
+      if (itemId === 'logout') {
+        confirmLogout();
         return;
       }
 
@@ -81,7 +95,7 @@ export default function HomeScreen() {
         });
       }
     },
-    [closeDrawer, router],
+    [closeDrawer, confirmLogout, router],
   );
 
   return (
@@ -93,82 +107,83 @@ export default function HomeScreen() {
         onNotificationsPress={openNotifications}
         onSearchPress={openSearch}
       />
-      <TabPageContent isLoading={isPageLoading} loadingLabel="Loading home page">
-        <ScrollView className="flex-1" contentContainerClassName="py-4">
-          <HeroCarousel slides={heroSlides} />
-          <View className="mt-4">
-            <ShoppingBenefits benefits={shoppingBenefits} />
-          </View>
-          <View className="mt-8">
-            <ShopByCategory categories={shopCategories} />
-          </View>
-          <View className="mt-6">
-            <FlashSaleBanner sale={flashSale} />
-          </View>
-          <View className="mt-8">
-            <ProductSlider
-              bagProductIds={bagProductIds}
-              onAddToCartPress={addCartItem}
-              onFavoritePress={toggleWishlistItem}
-              onGoToBagPress={openBag}
-              onProductPress={openProductDetail}
-              products={newArrivals}
-              title="New Arrivals"
-              wishlistProductIds={wishlistProductIds}
-            />
-          </View>
-          <View className="mt-8">
-            <ProductSlider
-              bagProductIds={bagProductIds}
-              onAddToCartPress={addCartItem}
-              onFavoritePress={toggleWishlistItem}
-              onGoToBagPress={openBag}
-              onProductPress={openProductDetail}
-              products={mostPopularProducts}
-              title="Most Popular Products"
-              wishlistProductIds={wishlistProductIds}
-            />
-          </View>
-          <View className="mt-8">
-            <PromotionalBanner content={promotionBanner} />
-          </View>
-          <View className="mt-8">
-            <ProductSlider
-              bagProductIds={bagProductIds}
-              onAddToCartPress={addCartItem}
-              onFavoritePress={toggleWishlistItem}
-              onGoToBagPress={openBag}
-              onProductPress={openProductDetail}
-              products={trendingFootwear}
-              title="Trending Footwear"
-              wishlistProductIds={wishlistProductIds}
-            />
-          </View>
-          <View className="mt-8">
-            <ShopByStyle categories={styleCategories} />
-          </View>
-          <View className="mt-8">
-            <ProductGrid
-              bagProductIds={bagProductIds}
-              onAddToCartPress={addCartItem}
-              onFavoritePress={toggleWishlistItem}
-              onGoToBagPress={openBag}
-              onProductPress={openProductDetail}
-              products={allCollections}
-              title="All Collections"
-              wishlistProductIds={wishlistProductIds}
-            />
-          </View>
-          <View className="mt-8">
-            <SaleBanner content={salePromotionBanner} />
-          </View>
-        </ScrollView>
-      </TabPageContent>
+      <ScrollView className="flex-1" contentContainerClassName="py-4">
+        <HeroCarousel slides={heroSlides} />
+        <View className="mt-4">
+          <ShoppingBenefits benefits={shoppingBenefits} />
+        </View>
+        <View className="mt-8">
+          <ShopByCategory categories={shopCategories} />
+        </View>
+        <View className="mt-6">
+          <FlashSaleBanner sale={flashSale} />
+        </View>
+        <View className="mt-8">
+          <ProductSlider
+            bagProductIds={bagProductIds}
+            onAddToCartPress={addCartItem}
+            onFavoritePress={toggleWishlistItem}
+            onGoToBagPress={openBag}
+            onProductPress={openProductDetail}
+            products={newArrivals}
+            title="New Arrivals"
+            wishlistProductIds={wishlistProductIds}
+          />
+        </View>
+        <View className="mt-8">
+          <ProductSlider
+            bagProductIds={bagProductIds}
+            onAddToCartPress={addCartItem}
+            onFavoritePress={toggleWishlistItem}
+            onGoToBagPress={openBag}
+            onProductPress={openProductDetail}
+            products={mostPopularProducts}
+            title="Most Popular Products"
+            wishlistProductIds={wishlistProductIds}
+          />
+        </View>
+        <View className="mt-8">
+          <PromotionalBanner content={promotionBanner} />
+        </View>
+        <View className="mt-8">
+          <ProductSlider
+            bagProductIds={bagProductIds}
+            onAddToCartPress={addCartItem}
+            onFavoritePress={toggleWishlistItem}
+            onGoToBagPress={openBag}
+            onProductPress={openProductDetail}
+            products={trendingFootwear}
+            title="Trending Footwear"
+            wishlistProductIds={wishlistProductIds}
+          />
+        </View>
+        <View className="mt-8">
+          <ShopByStyle categories={styleCategories} />
+        </View>
+        <View className="mt-8">
+          <ProductGrid
+            bagProductIds={bagProductIds}
+            onAddToCartPress={addCartItem}
+            onFavoritePress={toggleWishlistItem}
+            onGoToBagPress={openBag}
+            onProductPress={openProductDetail}
+            products={allCollections}
+            title="All Collections"
+            wishlistProductIds={wishlistProductIds}
+          />
+        </View>
+        <View className="mt-8">
+          <SaleBanner content={salePromotionBanner} />
+        </View>
+      </ScrollView>
       <SidebarDrawer
+        customer={customer}
         isOpen={isDrawerOpen}
         onClose={closeDrawer}
         onItemPress={handleDrawerItemPress}
+        onLoginPress={openAccount}
       />
+      <ThemedModal {...modalProps} />
     </Screen>
   );
 }

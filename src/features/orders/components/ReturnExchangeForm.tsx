@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { Text } from '@/components/ui/Text';
 import { ReturnActionCards } from '@/features/orders/components/ReturnActionCards';
 import { ReturnConditionSelector } from '@/features/orders/components/ReturnConditionSelector';
@@ -17,6 +18,7 @@ import {
   returnExchangeSchema,
   type ReturnExchangeFormValues,
 } from '@/features/orders/schemas/returnExchangeSchema';
+import { useThemedModal } from '@/hooks/useThemedModal';
 import { colors } from '@/theme';
 
 interface ReturnExchangeFormProps {
@@ -32,6 +34,7 @@ const styles = StyleSheet.create({
 });
 
 export function ReturnExchangeForm({ onCancel, onSubmit }: ReturnExchangeFormProps) {
+  const { modalProps, openModal } = useThemedModal();
   const {
     control,
     formState: { errors },
@@ -48,10 +51,11 @@ export function ReturnExchangeForm({ onCancel, onSubmit }: ReturnExchangeFormPro
   });
 
   const handleEvidencePress = () => {
-    Alert.alert(
-      'Upload Evidence',
-      'Photo and video selection will be available when uploads are connected.',
-    );
+    openModal({
+      message: 'Photo and video selection will be available when uploads are connected.',
+      title: 'Upload evidence',
+      tone: 'info',
+    });
   };
 
   return (
@@ -158,6 +162,7 @@ export function ReturnExchangeForm({ onCancel, onSubmit }: ReturnExchangeFormPro
           </Text>
         </Pressable>
       </View>
+      <ThemedModal {...modalProps} />
     </View>
   );
 }

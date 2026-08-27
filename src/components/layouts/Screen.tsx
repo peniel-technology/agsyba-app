@@ -7,6 +7,7 @@ interface ScreenProps extends PropsWithChildren {
   padded?: boolean;
   className?: string;
   includeBottomInset?: boolean;
+  safeAreaClassName?: string;
 }
 
 const fullScreenEdges = ['top', 'right', 'bottom', 'left'] as const satisfies readonly Edge[];
@@ -18,6 +19,7 @@ export function Screen({
   padded = true,
   className = '',
   includeBottomInset = true,
+  safeAreaClassName = 'bg-background',
 }: ScreenProps) {
   const paddingClassName = padded ? 'p-6' : '';
   const content = scroll ? (
@@ -29,7 +31,7 @@ export function Screen({
   );
   return (
     <SafeAreaView
-      className="flex-1 bg-background"
+      className={`flex-1 ${safeAreaClassName}`}
       edges={includeBottomInset ? fullScreenEdges : topScreenEdges}
     >
       {content}

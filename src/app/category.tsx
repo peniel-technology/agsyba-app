@@ -2,8 +2,9 @@ import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { SearchForm } from '@/components/forms/SearchForm';
-import { Screen, SidebarDrawer, TabPageContent, TopNavbar } from '@/components/layouts';
+import { Screen, SidebarDrawer, TopNavbar } from '@/components/layouts';
 import { routes } from '@/constants/routes';
 import { BrowseCategories } from '@/features/products/components/BrowseCategories';
 import { CategoryOfferBanner } from '@/features/products/components/CategoryOfferBanner';
@@ -12,7 +13,9 @@ import { browseCategories } from '@/features/products/constants/browseCategories
 import { trendingCategories } from '@/features/products/constants/trendingCategories';
 import { useCategorySearch } from '@/features/products/hooks/useCategorySearch';
 import type { BrowseCategory } from '@/features/products/types/browseCategory';
-import { useTabPageLoader } from '@/hooks/useTabPageLoader';
+import { useLogout } from '@/features/auth/hooks/useLogout';
+import { useThemedModal } from '@/hooks/useThemedModal';
+import { useCurrentCustomer } from '@/queries/useCurrentCustomer';
 import { useCartStore } from '@/stores/useCartStore';
 import { useUiStore } from '@/stores/useUiStore';
 import type { DrawerItemId } from '@/types/drawer';
@@ -24,7 +27,13 @@ export default function CategoryScreen() {
   const isDrawerOpen = useUiStore((state) => state.isDrawerOpen);
   const openDrawer = useUiStore((state) => state.openDrawer);
   const { filteredCategories, setQuery } = useCategorySearch(browseCategories);
-  const isPageLoading = useTabPageLoader();
+  const { data: customer } = useCurrentCustomer();
+  const { modalProps, openModal } = useThemedModal();
+  const confirmLogout = useLogout(openModal);
+  const openAccount = useCallback(() => {
+    closeDrawer();
+    router.replace(customer ? routes.profile : routes.login);
+  }, [closeDrawer, customer, router]);
   const openCart = useCallback(() => {
     router.push(routes.shoppingBag);
   }, [router]);
@@ -51,6 +60,11 @@ export default function CategoryScreen() {
         return;
       }
 
+      if (itemId === 'logout') {
+        confirmLogout();
+        return;
+      }
+
       if (itemId === 'contact') {
         router.replace(routes.contact);
         return;
@@ -73,7 +87,7 @@ export default function CategoryScreen() {
         });
       }
     },
-    [closeDrawer, router],
+    [closeDrawer, confirmLogout, router],
   );
 
   return (
@@ -85,35 +99,33 @@ export default function CategoryScreen() {
         onNotificationsPress={openNotifications}
         onSearchPress={openSearch}
       />
-      <TabPageContent isLoading={isPageLoading} loadingLabel="Loading category page">
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="py-4"
-          keyboardDismissMode="on-drag"
-          keyboardShouldPersistTaps="handled"
-        >
-          <View className="px-4">
-            <SearchForm onQueryChange={setQuery} />
-          </View>
-          <View className="mt-8">
-            <BrowseCategories
-              categories={filteredCategories}
-              onCategoryPress={handleCategoryPress}
-            />
-          </View>
-          <View className="mt-8">
-            <TrendingNow categories={trendingCategories} />
-          </View>
-          <View className="mt-8">
-            <CategoryOfferBanner />
-          </View>
-        </ScrollView>
-      </TabPageContent>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="py-4"
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+      >
+        <View className="px-4">
+          <SearchForm onQueryChange={setQuery} />
+        </View>
+        <View className="mt-8">
+          <BrowseCategories categories={filteredCategories} onCategoryPress={handleCategoryPress} />
+        </View>
+        <View className="mt-8">
+          <TrendingNow categories={trendingCategories} />
+        </View>
+        <View className="mt-8">
+          <CategoryOfferBanner />
+        </View>
+      </ScrollView>
       <SidebarDrawer
+        customer={customer}
         isOpen={isDrawerOpen}
         onClose={closeDrawer}
         onItemPress={handleDrawerItemPress}
+        onLoginPress={openAccount}
       />
+      <ThemedModal {...modalProps} />
     </Screen>
   );
 }

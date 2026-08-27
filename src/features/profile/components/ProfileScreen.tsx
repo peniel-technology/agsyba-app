@@ -1,17 +1,26 @@
 import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 
 import { PageHeader, Screen } from '@/components/layouts';
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { Text } from '@/components/ui/Text';
 import { routes } from '@/constants/routes';
 import { ProfileAccountMenu } from '@/features/profile/components/ProfileAccountMenu';
 import { ProfileHero } from '@/features/profile/components/ProfileHero';
 import { ProfileInformationCard } from '@/features/profile/components/ProfileInformationCard';
 import type { ProfileAccountItemId } from '@/features/profile/constants/profileData';
+import { useLogout } from '@/features/auth/hooks/useLogout';
+import { useThemedModal } from '@/hooks/useThemedModal';
+import { useCurrentCustomer } from '@/queries/useCurrentCustomer';
+import { colors } from '@/theme';
 
 export function ProfileScreen() {
   const router = useRouter();
+  const { modalProps, openModal } = useThemedModal();
+  const handleLogoutPress = useLogout(openModal);
+  const { data: customer, isFetching, isLoading } = useCurrentCustomer();
+  const isCustomerLoading = isLoading || (!customer && isFetching);
   const handleBackPress = useCallback(() => {
     if (router.canGoBack()) {
       router.back();
@@ -21,8 +30,8 @@ export function ProfileScreen() {
     router.replace(routes.home);
   }, [router]);
   const handleEditPress = useCallback(() => {
-    Alert.alert('Edit Profile', 'Profile editing will be available soon.');
-  }, []);
+    router.push(routes.editProfile);
+  }, [router]);
   const handleAccountItemPress = useCallback(
     (itemId: ProfileAccountItemId) => {
       if (itemId === 'wishlist') {
@@ -66,16 +75,61 @@ export function ProfileScreen() {
         notifications: 'Notifications',
       };
 
-      Alert.alert(itemLabels[itemId], 'This account section will be available soon.');
+      openModal({
+        message: 'This account section will be available soon.',
+        title: itemLabels[itemId],
+        tone: 'info',
+      });
     },
-    [router],
+    [openModal, router],
   );
-  const handleLogoutPress = useCallback(() => {
-    Alert.alert('Log Out', 'Are you sure you want to log out?', [
-      { style: 'cancel', text: 'Cancel' },
-      { style: 'destructive', text: 'Log Out' },
-    ]);
-  }, []);
+
+  if (isCustomerLoading) {
+    return (
+      <Screen includeBottomInset={false} padded={false}>
+        <PageHeader onBackPress={handleBackPress} title="My Profile" />
+        <View className="flex-1 items-center justify-center gap-3 bg-background px-6">
+          <ActivityIndicator color={colors.brand} size="small" />
+          <Text tone="muted" variant="caption">
+            Loading your account...
+          </Text>
+        </View>
+      </Screen>
+    );
+  }
+
+  if (!customer) {
+    return (
+      <Screen includeBottomInset={false} padded={false}>
+        <PageHeader onBackPress={handleBackPress} title="My Profile" />
+        <View className="flex-1 items-center justify-center gap-4 bg-background px-6">
+          <View className="size-16 items-center justify-center rounded-full bg-sale-surface">
+            <Text className="text-2xl" tone="brand" variant="title">
+              ?
+            </Text>
+          </View>
+          <View className="items-center gap-1">
+            <Text className="text-center" variant="title">
+              Sign in to view your account
+            </Text>
+            <Text className="text-center leading-5" tone="muted" variant="caption">
+              Access your orders, saved items, addresses, and account details.
+            </Text>
+          </View>
+          <Pressable
+            accessibilityLabel="Login or sign up"
+            accessibilityRole="button"
+            className="min-h-12 items-center justify-center rounded-sm bg-order-action px-8 py-4 active:opacity-85"
+            onPress={() => router.replace(routes.login)}
+          >
+            <Text className="uppercase" tone="brandForeground" variant="label">
+              Login / Sign up
+            </Text>
+          </Pressable>
+        </View>
+      </Screen>
+    );
+  }
 
   return (
     <Screen includeBottomInset={false} padded={false}>
@@ -85,13 +139,13 @@ export function ProfileScreen() {
         contentContainerClassName="gap-5 pb-8 pt-4"
         keyboardShouldPersistTaps="handled"
       >
-        <ProfileHero onEditPress={handleEditPress} />
+        <ProfileHero customer={customer} onEditPress={handleEditPress} />
 
         <View className="gap-3 px-4">
           <Text className="uppercase" variant="label">
             Personal Information
           </Text>
-          <ProfileInformationCard />
+          <ProfileInformationCard customer={customer} />
         </View>
 
         <View className="gap-3 px-4">
@@ -114,6 +168,7 @@ export function ProfileScreen() {
           </Pressable>
         </View>
       </ScrollView>
+      <ThemedModal {...modalProps} />
     </Screen>
   );
 }

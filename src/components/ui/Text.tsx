@@ -31,7 +31,8 @@ interface TextProps extends ComponentProps<typeof NativeText> {
     | 'error'
     | 'orderAction'
     | 'sale'
-    | 'success';
+    | 'success'
+    | 'warning';
 }
 
 export function Text({ variant = 'body', tone = 'default', className = '', ...props }: TextProps) {
@@ -66,6 +67,7 @@ export function Text({ variant = 'body', tone = 'default', className = '', ...pr
     orderAction: 'text-order-action',
     sale: 'text-sale',
     success: 'text-success',
+    warning: 'text-warning',
   }[tone];
 
   return <NativeText className={`${toneClassName} ${variantClassName} ${className}`} {...props} />;

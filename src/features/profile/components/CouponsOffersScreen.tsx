@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { PageHeader, Screen } from '@/components/layouts';
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { Text } from '@/components/ui/Text';
 import { routes } from '@/constants/routes';
 import { CouponCodeEntry } from '@/features/profile/components/CouponCodeEntry';
@@ -13,9 +14,11 @@ import {
   expiredCoupons,
   type CouponOffer,
 } from '@/features/profile/constants/couponData';
+import { useThemedModal } from '@/hooks/useThemedModal';
 
 export function CouponsOffersScreen() {
   const router = useRouter();
+  const { modalProps, openModal } = useThemedModal();
   const [couponCode, setCouponCode] = useState('');
 
   const handleBackPress = useCallback(() => {
@@ -27,20 +30,35 @@ export function CouponsOffersScreen() {
     const coupon = availableCoupons.find((offer) => offer.code === normalizedCode);
 
     if (!coupon) {
-      Alert.alert('Invalid Coupon', 'Enter a valid available coupon code.');
+      openModal({
+        message: 'Enter a valid available coupon code.',
+        title: 'Invalid coupon',
+        tone: 'error',
+      });
       return;
     }
 
-    Alert.alert('Coupon Applied', `${coupon.code} is ready to use at checkout.`);
-  }, [couponCode]);
+    openModal({
+      message: `${coupon.code} is ready to use at checkout.`,
+      title: 'Coupon applied',
+      tone: 'success',
+    });
+  }, [couponCode, openModal]);
 
   const handleCopyPress = useCallback((code: string) => {
     setCouponCode(code);
   }, []);
 
-  const handleTermsPress = useCallback((offer: CouponOffer) => {
-    Alert.alert(`${offer.code} Terms`, offer.description);
-  }, []);
+  const handleTermsPress = useCallback(
+    (offer: CouponOffer) => {
+      openModal({
+        message: offer.description,
+        title: `${offer.code} terms`,
+        tone: 'info',
+      });
+    },
+    [openModal],
+  );
 
   return (
     <Screen includeBottomInset={false} padded={false}>
@@ -82,6 +100,7 @@ export function CouponsOffersScreen() {
           ))}
         </View>
       </ScrollView>
+      <ThemedModal {...modalProps} />
     </Screen>
   );
 }

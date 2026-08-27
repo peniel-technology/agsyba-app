@@ -1,29 +1,40 @@
 import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
 import { PageHeader, Screen } from '@/components/layouts';
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { Text } from '@/components/ui/Text';
 import { routes } from '@/constants/routes';
 import { ReturnExchangeProgress } from '@/features/orders/components/ReturnExchangeProgress';
 import { ReturnSuccessOverview } from '@/features/orders/components/ReturnSuccessOverview';
 import { ReturnSuccessTimeline } from '@/features/orders/components/ReturnSuccessTimeline';
 import { returnExchangeSuccessData } from '@/features/orders/constants/returnExchangeSuccessData';
+import { useThemedModal } from '@/hooks/useThemedModal';
 
 export function ReturnExchangeSuccessScreen() {
   const router = useRouter();
+  const { modalProps, openModal } = useThemedModal();
 
   const handleBackPress = useCallback(() => {
     router.replace(routes.ordersReturns);
   }, [router]);
 
   const handleCopyPress = useCallback(() => {
-    Alert.alert('Return ID', `${returnExchangeSuccessData.returnId} is ready to copy.`);
-  }, []);
+    openModal({
+      message: `${returnExchangeSuccessData.returnId} is ready to copy.`,
+      title: 'Return ID',
+      tone: 'success',
+    });
+  }, [openModal]);
 
   const handleTrackPress = useCallback(() => {
-    Alert.alert('Track Return Status', 'Return tracking will be available soon.');
-  }, []);
+    openModal({
+      message: 'Return tracking will be available soon.',
+      title: 'Track return status',
+      tone: 'info',
+    });
+  }, [openModal]);
 
   const handleContinueShopping = useCallback(() => {
     router.replace(routes.shop);
@@ -63,6 +74,7 @@ export function ReturnExchangeSuccessScreen() {
           </Pressable>
         </View>
       </ScrollView>
+      <ThemedModal {...modalProps} />
     </Screen>
   );
 }

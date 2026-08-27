@@ -1,51 +1,46 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Check } from 'lucide-react-native';
+import { Controller, type FieldErrors, useForm } from 'react-hook-form';
 import { useCallback, useState } from 'react';
-import { Alert, Pressable, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Pressable, View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
 import { routes } from '@/constants/routes';
 import { AuthDivider } from '@/features/auth/components/AuthDivider';
-import { AuthMobileField } from '@/features/auth/components/AuthMobileField';
 import { AuthPageLayout } from '@/features/auth/components/AuthPageLayout';
 import { AuthPasswordField } from '@/features/auth/components/AuthPasswordField';
 import { type SocialProvider } from '@/features/auth/components/AuthProviderButton';
 import { AuthTextField } from '@/features/auth/components/AuthTextField';
 import { SocialAuthButtons } from '@/features/auth/components/SocialAuthButtons';
+import { useGoogleLogin, useLogin } from '@/features/auth/hooks/useAuthMutations';
+import { useRedirectAuthenticatedUser } from '@/features/auth/hooks/useRedirectAuthenticatedUser';
+import { loginSchema, type LoginFormValues } from '@/features/auth/schemas/loginSchema';
+import {
+  getAuthTransitionDirection,
+  getAuthTransitionKey,
+} from '@/features/auth/utils/authTransition';
+import { getErrorMessage } from '@/features/auth/utils/getErrorMessage';
+import { triggerValidationFeedback } from '@/features/auth/utils/triggerValidationFeedback';
+import { useToastStore } from '@/stores/useToastStore';
 import { colors, iconSizes, iconStrokeWidths } from '@/theme';
-
-interface LoginErrors {
-  email?: string;
-  mobileNumber?: string;
-  password?: string;
-}
-
-function validateLogin(email: string, mobileNumber: string, password: string): LoginErrors {
-  const errors: LoginErrors = {};
-
-  if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-    errors.email = 'Enter a valid email address.';
-  }
-
-  if (!/^\d{7,15}$/.test(mobileNumber.replace(/\D/g, ''))) {
-    errors.mobileNumber = 'Enter a valid mobile number.';
-  }
-
-  if (password.length < 6) {
-    errors.password = 'Password must be at least 6 characters.';
-  }
-
-  return errors;
-}
 
 export function LoginScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState('hello@agsyba.com');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [password, setPassword] = useState('');
+  const isAuthenticated = useRedirectAuthenticatedUser();
+  const params = useLocalSearchParams();
+  const transitionDirection = getAuthTransitionDirection(params.transition);
+  const transitionKey = getAuthTransitionKey(params.transitionId);
+  const googleLoginMutation = useGoogleLogin();
+  const loginMutation = useLogin();
+  const showToast = useToastStore((state) => state.showToast);
   const [rememberMe, setRememberMe] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [errors, setErrors] = useState<LoginErrors>({});
+  const { control, formState, handleSubmit } = useForm<LoginFormValues>({
+    defaultValues: { email: '', password: '' },
+    mode: 'onTouched',
+    resolver: zodResolver(loginSchema),
+  });
 
   const handleBackPress = useCallback(() => {
     if (router.canGoBack()) {
@@ -56,21 +51,81 @@ export function LoginScreen() {
     router.replace(routes.home);
   }, [router]);
 
-  const handleLogin = useCallback(() => {
-    const nextErrors = validateLogin(email, mobileNumber, password);
-    setErrors(nextErrors);
+  const handleLogin = handleSubmit(
+    async (values) => {
+      try {
+        const response = await loginMutation.mutateAsync(values);
+        showToast({ message: response.message, title: 'Login successful', tone: 'success' });
+        router.replace(routes.home);
+      } catch (error) {
+        showToast({
+          message: getErrorMessage(error, 'Something went wrong. Please try again.'),
+          title: 'Login failed',
+          tone: 'error',
+        });
+      }
+    },
+    (formErrors: FieldErrors<LoginFormValues>) => {
+      const message = formErrors.email?.message ?? formErrors.password?.message;
 
-    if (Object.keys(nextErrors).length > 0) {
-      return;
-    }
+      triggerValidationFeedback();
+      showToast({
+        message: typeof message === 'string' ? message : 'Check your login details.',
+        title: 'Check your details',
+        tone: 'error',
+      });
+    },
+  );
 
-    Alert.alert('Login ready', 'Connect your account service to complete sign in.');
-  }, [email, mobileNumber, password]);
+  const openForgotPassword = useCallback(() => {
+    router.replace({
+      params: { transition: 'forward', transitionId: String(Date.now()) },
+      pathname: routes.forgotPassword,
+    });
+  }, [router]);
 
-  const showUnavailableMessage = useCallback((provider: SocialProvider) => {
-    const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
-    Alert.alert(`${providerName} login`, `${providerName} sign-in will be connected here.`);
-  }, []);
+  const showUnavailableMessage = useCallback(
+    (provider: SocialProvider) => {
+      const providerName = provider.charAt(0).toUpperCase() + provider.slice(1);
+      showToast({
+        message: `${providerName} sign-in is not configured for the mobile app yet.`,
+        title: `${providerName} login unavailable`,
+        tone: 'info',
+      });
+    },
+    [showToast],
+  );
+
+  const handleSocialProviderPress = useCallback(
+    (provider: SocialProvider) => {
+      if (provider !== 'google') {
+        showUnavailableMessage(provider);
+        return;
+      }
+
+      void googleLoginMutation
+        .mutateAsync()
+        .then((response) => {
+          showToast({ message: response.message, title: 'Login successful', tone: 'success' });
+          router.replace(routes.home);
+        })
+        .catch((error: unknown) => {
+          showToast({
+            message: getErrorMessage(error, 'Google sign-in is unavailable. Please try again.'),
+            title: 'Google login failed',
+            tone: 'error',
+          });
+        });
+    },
+    [googleLoginMutation, router, showToast, showUnavailableMessage],
+  );
+
+  const isSubmitting =
+    formState.isSubmitting || loginMutation.isPending || googleLoginMutation.isPending;
+
+  if (isAuthenticated) {
+    return null;
+  }
 
   return (
     <AuthPageLayout
@@ -78,6 +133,8 @@ export function LoginScreen() {
       onBackPress={handleBackPress}
       onLoginPress={() => router.replace(routes.login)}
       onRegisterPress={() => router.replace(routes.register)}
+      transitionDirection={transitionDirection}
+      transitionKey={transitionKey}
     >
       <View className="gap-2">
         <Text variant="display">Good to see you again</Text>
@@ -87,33 +144,44 @@ export function LoginScreen() {
       </View>
 
       <View className="gap-5">
-        <AuthTextField
-          autoCapitalize="none"
-          autoCorrect={false}
-          error={errors.email}
-          keyboardType="email-address"
-          label="Email Address"
-          onChangeText={setEmail}
-          placeholder="Enter your email address"
-          returnKeyType="next"
-          value={email}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <AuthTextField
+              autoCapitalize="none"
+              autoCorrect={false}
+              error={formState.errors.email?.message}
+              keyboardType="email-address"
+              label="Email Address"
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              onSubmitEditing={() => void handleLogin()}
+              placeholder="Enter your email address"
+              returnKeyType="next"
+              textContentType="emailAddress"
+              value={field.value}
+            />
+          )}
         />
-        <AuthMobileField
-          error={errors.mobileNumber}
-          onChangeText={setMobileNumber}
-          onCountryCodePress={() =>
-            Alert.alert('Country code', 'Country code selection will be available soon.')
-          }
-          value={mobileNumber}
-        />
-        <AuthPasswordField
-          error={errors.password}
-          isVisible={isPasswordVisible}
-          label="Password"
-          onChangeText={setPassword}
-          onToggleVisibility={() => setIsPasswordVisible((visible) => !visible)}
-          placeholder="••••••••"
-          value={password}
+        <Controller
+          control={control}
+          name="password"
+          render={({ field }) => (
+            <AuthPasswordField
+              error={formState.errors.password?.message}
+              isVisible={isPasswordVisible}
+              label="Password"
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              onSubmitEditing={() => void handleLogin()}
+              placeholder="Enter your password"
+              returnKeyType="done"
+              textContentType="password"
+              onToggleVisibility={() => setIsPasswordVisible((visible) => !visible)}
+              value={field.value}
+            />
+          )}
         />
 
         <View className="flex-row items-center justify-between">
@@ -142,9 +210,7 @@ export function LoginScreen() {
             accessibilityLabel="Forgot password"
             accessibilityRole="button"
             className="active:opacity-70"
-            onPress={() =>
-              Alert.alert('Forgot password', 'Password recovery will be available soon.')
-            }
+            onPress={openForgotPassword}
           >
             <Text tone="orderAction" variant="captionStrong">
               Forgot password?
@@ -155,11 +221,13 @@ export function LoginScreen() {
         <Pressable
           accessibilityLabel="Login"
           accessibilityRole="button"
-          className="min-h-12 items-center justify-center rounded-sm bg-order-action p-4 active:opacity-85"
-          onPress={handleLogin}
+          accessibilityState={{ disabled: isSubmitting }}
+          className="min-h-12 items-center justify-center rounded-sm bg-order-action p-4 active:opacity-85 disabled:opacity-50"
+          disabled={isSubmitting}
+          onPress={() => void handleLogin()}
         >
           <Text className="uppercase" tone="brandForeground" variant="label">
-            Login
+            {isSubmitting ? 'Logging in...' : 'Login'}
           </Text>
         </Pressable>
       </View>
@@ -167,7 +235,7 @@ export function LoginScreen() {
       <AuthDivider />
 
       <View className="gap-3">
-        <SocialAuthButtons onProviderPress={showUnavailableMessage} />
+        <SocialAuthButtons disabled={isSubmitting} onProviderPress={handleSocialProviderPress} />
       </View>
 
       <Text className="text-center leading-4" tone="muted" variant="caption">

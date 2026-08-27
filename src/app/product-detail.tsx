@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, ScrollView, Share, View } from 'react-native';
+import { ScrollView, Share, View } from 'react-native';
 
 import { CollectionPageHeader, Screen } from '@/components/layouts';
+import { ThemedModal } from '@/components/modals/ThemedModal';
 import { routes } from '@/constants/routes';
 import { ProductBestOffers } from '@/features/products/components/detail/ProductBestOffers';
 import { ProductBreadcrumbs } from '@/features/products/components/detail/ProductBreadcrumbs';
@@ -27,6 +28,7 @@ import {
   youMayAlsoLikeProducts,
 } from '@/features/products/constants/productDetailRecommendations';
 import { useProductBagNavigation } from '@/hooks/useProductBagNavigation';
+import { useThemedModal } from '@/hooks/useThemedModal';
 import { useCartStore } from '@/stores/useCartStore';
 import { useWishlist } from '@/features/wishlist/hooks/useWishlist';
 import type { ProductPreview } from '@/types/product';
@@ -37,6 +39,7 @@ export default function ProductDetailScreen() {
   const cartItemCount = useCartStore((state) => state.itemCount);
   const { bagProductIds, openBag } = useProductBagNavigation();
   const { productIds: wishlistProductIds, toggleItem: toggleWishlistItem } = useWishlist();
+  const { modalProps, openModal } = useThemedModal();
   const isProductInBag = bagProductIds.has(blushFloralWrapMidiDressPreview.id);
   const isFavorite = wishlistProductIds.has(blushFloralWrapMidiDressPreview.id);
   const [quantity, setQuantity] = useState(1);
@@ -58,21 +61,30 @@ export default function ProductDetailScreen() {
         title: blushFloralWrapMidiDress.name,
       });
     } catch {
-      Alert.alert('Unable to Share', 'Please try sharing this product again.');
+      openModal({
+        message: 'Please try sharing this product again.',
+        title: 'Unable to share',
+        tone: 'error',
+      });
     }
-  }, []);
+  }, [openModal]);
   const addToBag = useCallback(() => {
     addCartItem(blushFloralWrapMidiDressPreview, quantity);
   }, [addCartItem, quantity]);
   const openSizeGuide = useCallback(() => {
-    Alert.alert('Size Guide', 'XS: 6 · S: 8 · M: 10 · L: 12 · XL: 14');
-  }, []);
+    openModal({
+      message: 'XS: 6 · S: 8 · M: 10 · L: 12 · XL: 14',
+      title: 'Size guide',
+      tone: 'info',
+    });
+  }, [openModal]);
   const openSellerInfo = useCallback(() => {
-    Alert.alert(
-      blushFloralWrapMidiDress.seller.name,
-      `Seller rating: ${blushFloralWrapMidiDress.seller.rating.toFixed(1)} out of 5.`,
-    );
-  }, []);
+    openModal({
+      message: `Seller rating: ${blushFloralWrapMidiDress.seller.rating.toFixed(1)} out of 5.`,
+      title: blushFloralWrapMidiDress.seller.name,
+      tone: 'info',
+    });
+  }, [openModal]);
   const addRecommendedProductToCart = useCallback(
     (product: ProductPreview) => {
       addCartItem(product);
@@ -83,11 +95,19 @@ export default function ProductDetailScreen() {
     router.push(routes.productDetail);
   }, [router]);
   const viewAllRecommendations = useCallback(() => {
-    Alert.alert('You May Also Like', `${youMayAlsoLikeProducts.length} products available.`);
-  }, []);
+    openModal({
+      message: `${youMayAlsoLikeProducts.length} products available.`,
+      title: 'You may also like',
+      tone: 'info',
+    });
+  }, [openModal]);
   const viewAllRecentlyViewed = useCallback(() => {
-    Alert.alert('Recently Viewed', `${recentlyViewedProducts.length} products available.`);
-  }, []);
+    openModal({
+      message: `${recentlyViewedProducts.length} products available.`,
+      title: 'Recently viewed',
+      tone: 'info',
+    });
+  }, [openModal]);
 
   return (
     <Screen includeBottomInset={false} padded={false}>
@@ -172,6 +192,7 @@ export default function ProductDetailScreen() {
           />
         </View>
       </ScrollView>
+      <ThemedModal {...modalProps} />
     </Screen>
   );
 }

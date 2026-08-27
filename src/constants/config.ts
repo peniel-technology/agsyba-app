@@ -8,6 +8,8 @@ function readExtraString(value: unknown): string {
 
 export const config = {
   apiUrl: readExtraString(extra?.apiUrl),
+  medusaApiUrl: readExtraString(extra?.medusaApiUrl),
+  defaultCountryCode: readExtraString(extra?.defaultCountryCode) || 'ae',
   reverseGeocodingUrl: readExtraString(extra?.reverseGeocodingUrl),
   reverseGeocodingUserAgent: readExtraString(extra?.reverseGeocodingUserAgent),
 } as const;

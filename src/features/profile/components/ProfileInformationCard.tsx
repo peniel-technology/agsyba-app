@@ -2,8 +2,8 @@ import { CheckCircle2 } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
-import { profileData } from '@/features/profile/constants/profileData';
 import { colors, iconSizes, iconStrokeWidths } from '@/theme';
+import type { Customer } from '@/types/customer';
 
 interface ProfileFieldProps {
   label: string;
@@ -23,12 +23,16 @@ function ProfileField({ label, value }: ProfileFieldProps) {
   );
 }
 
-export function ProfileInformationCard() {
+interface ProfileInformationCardProps {
+  customer: Customer;
+}
+
+export function ProfileInformationCard({ customer }: ProfileInformationCardProps) {
   return (
     <View className="gap-4 rounded-lg border border-border bg-surface p-4">
       <View className="flex-row gap-4">
-        <ProfileField label="First Name" value={profileData.firstName} />
-        <ProfileField label="Last Name" value={profileData.lastName} />
+        <ProfileField label="First Name" value={customer.first_name || 'Not provided'} />
+        <ProfileField label="Last Name" value={customer.last_name || 'Not provided'} />
       </View>
 
       <View className="h-px bg-subtle-border" />
@@ -39,7 +43,7 @@ export function ProfileInformationCard() {
         </Text>
         <View className="flex-row items-center gap-1.5">
           <Text className="flex-1" numberOfLines={1} variant="label">
-            {profileData.email}
+            {customer.email}
           </Text>
           <CheckCircle2
             color={colors.success}
@@ -51,14 +55,7 @@ export function ProfileInformationCard() {
 
       <View className="h-px bg-subtle-border" />
 
-      <ProfileField label="Phone" value={profileData.phone} />
-
-      <View className="h-px bg-subtle-border" />
-
-      <View className="flex-row gap-4">
-        <ProfileField label="Gender" value={profileData.gender} />
-        <ProfileField label="Date of Birth" value={profileData.dateOfBirth} />
-      </View>
+      <ProfileField label="Phone" value={customer.phone || 'Not provided'} />
     </View>
   );
 }
