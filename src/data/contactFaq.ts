@@ -7,14 +7,13 @@ export interface ContactFaq {
 export interface ContactFaqData {
   title: string;
   subtitle: string;
-  buttonText: string;
+  buttonText?: string;
   faqs: readonly ContactFaq[];
 }
 
 export const contactFaqData: ContactFaqData = {
   title: 'Frequently Asked Questions',
   subtitle: "Can't find what you're looking for? Browse our FAQ section.",
-  buttonText: 'VIEW ALL FAQS',
   faqs: [
     {
       id: '1',

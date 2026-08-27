@@ -8,20 +8,31 @@ export interface ContactCheckboxProps {
   checked: boolean;
   label: string;
   onToggle: () => void;
+  error?: string;
 }
 
-export function ContactCheckbox({ checked, label, onToggle }: ContactCheckboxProps) {
+export function ContactCheckbox({ checked, error, label, onToggle }: ContactCheckboxProps) {
   return (
-    <Pressable
-      accessibilityRole="checkbox"
-      accessibilityState={{ checked }}
-      className="inline-flex flex-row items-center gap-2.5"
-      onPress={onToggle}
-    >
-      <View className="size-4 items-center justify-center rounded-[3px] border-2 border-red-500 bg-white">
-        {checked ? <Check color={colors.brand} size={11} strokeWidth={3} /> : null}
-      </View>
-      <Text className="flex-1 text-sm font-manrope text-neutral-500">{label}</Text>
-    </Pressable>
+    <View className="w-full gap-1.5">
+      <Pressable
+        accessibilityLabel={label}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked }}
+        className="flex-row items-center gap-2.5"
+        onPress={onToggle}
+      >
+        <View
+          className={`size-4 items-center justify-center rounded-[3px] border-2 bg-white ${error ? 'border-error' : 'border-red-500'}`}
+        >
+          {checked ? <Check color={colors.brand} size={11} strokeWidth={3} /> : null}
+        </View>
+        <Text className="flex-1 text-sm font-manrope text-neutral-500">{label}</Text>
+      </Pressable>
+      {error ? (
+        <Text accessibilityRole="alert" tone="error" variant="detail">
+          {error}
+        </Text>
+      ) : null}
+    </View>
   );
 }

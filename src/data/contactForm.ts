@@ -1,5 +1,9 @@
 import type { KeyboardTypeOptions } from 'react-native';
 
+import type { ContactFormValues } from '@/features/contact/schemas/contactFormSchema';
+
+export type { ContactFormValues } from '@/features/contact/schemas/contactFormSchema';
+
 export interface ContactTextFieldConfig {
   id: 'firstName' | 'lastName' | 'email' | 'phone';
   type: 'text' | 'email' | 'phone';
@@ -13,7 +17,7 @@ export interface ContactDropdownConfig {
   type: 'dropdown';
   label: string;
   placeholder: string;
-  options: string[];
+  options: readonly string[];
   keyboardType?: never;
 }
 
@@ -36,17 +40,7 @@ export interface ContactFormData {
   footer: string;
 }
 
-export type ContactFormFieldId = ContactFormData['fields'][number]['id'];
-
-export interface ContactFormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  subject: string;
-  message: string;
-  agreement: 'true' | 'false';
-}
+export type ContactFormFieldId = Exclude<keyof ContactFormValues, 'agreement'>;
 
 export const contactFormData: ContactFormData = {
   title: 'Send Us a Message',
@@ -100,3 +94,13 @@ export const contactFormData: ContactFormData = {
   buttonText: 'SEND MESSAGE',
   footer: 'Your information is safe and will never be shared',
 } as const;
+
+export const contactFormDefaultValues = {
+  agreement: false,
+  email: '',
+  firstName: '',
+  lastName: '',
+  message: '',
+  phone: '',
+  subject: 'General Inquiry',
+} satisfies ContactFormValues;

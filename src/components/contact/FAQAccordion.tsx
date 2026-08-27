@@ -32,9 +32,9 @@ export const FAQAccordion = memo(function FAQAccordion({
         </Text>
         <View className="ml-2 pt-0.5">
           {expanded ? (
-            <Minus color={colors.neutral900} size={18} strokeWidth={1.8} />
+            <Minus color={colors.text} size={18} strokeWidth={1.8} />
           ) : (
-            <Plus color={colors.neutral900} size={18} strokeWidth={1.8} />
+            <Plus color={colors.text} size={18} strokeWidth={1.8} />
           )}
         </View>
       </Pressable>

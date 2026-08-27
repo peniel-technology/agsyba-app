@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { LayoutAnimation, Platform, Pressable, ScrollView, UIManager, View } from 'react-native';
 
+import { ContactField } from '@/components/contact/ContactField';
 import { Text } from '@/components/ui/Text';
 import { colors } from '@/theme/colors';
 
@@ -9,12 +10,16 @@ export interface ContactDropdownProps {
   label: string;
   value: string;
   placeholder: string;
-  options: string[];
+  options: readonly string[];
   onSelect: (value: string) => void;
+  onBlur?: () => void;
+  error?: string;
 }
 
 export function ContactDropdown({
   label,
+  error,
+  onBlur,
   value,
   placeholder,
   options,
@@ -32,8 +37,11 @@ export function ContactDropdown({
 
   const toggleDropdown = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    if (isOpen) {
+      onBlur?.();
+    }
     setIsOpen((current) => !current);
-  }, []);
+  }, [isOpen, onBlur]);
 
   const closeDropdown = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -41,13 +49,13 @@ export function ContactDropdown({
   }, []);
 
   return (
-    <View className="w-full flex-col gap-1.5">
-      <Text className="text-xs font-manrope-bold text-neutral-900">{label}</Text>
+    <ContactField error={error} label={label}>
       <View className="relative">
         <Pressable
           accessibilityRole="button"
+          accessibilityHint={error}
           accessibilityState={{ expanded: isOpen }}
-          className="h-11 w-full flex-row items-center justify-between rounded-sm border border-zinc-100 bg-white px-4"
+          className={`h-11 w-full flex-row items-center justify-between rounded-sm border bg-white px-4 ${error ? 'border-error' : 'border-zinc-100'}`}
           onLayout={(event) => {
             setFieldHeight(Math.round(event.nativeEvent.layout.height));
           }}
@@ -84,6 +92,7 @@ export function ContactDropdown({
                   key={option}
                   onPress={() => {
                     onSelect(option);
+                    onBlur?.();
                     closeDropdown();
                   }}
                 >
@@ -98,6 +107,6 @@ export function ContactDropdown({
           </ScrollView>
         ) : null}
       </View>
-    </View>
+    </ContactField>
   );
 }

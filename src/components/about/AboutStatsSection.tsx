@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
+import type { AboutStat } from '@/types/about';
 
 interface StatCardProps {
   label: string;
@@ -57,27 +58,14 @@ function StatsRow({ items }: StatsRowProps) {
   );
 }
 
-export interface AboutStat {
-  label: string;
-  value: string;
-}
-
 export interface AboutStatsSectionProps {
   stats: readonly AboutStat[];
 }
 
-function createRows(items: readonly AboutStat[]) {
-  return items.reduce<AboutStat[][]>((acc, item, index) => {
-    const rowIndex = Math.floor(index / 2);
-
-    if (!acc[rowIndex]) {
-      acc[rowIndex] = [];
-    }
-
-    acc[rowIndex].push(item);
-
-    return acc;
-  }, []);
+function createRows(items: readonly AboutStat[]): AboutStat[][] {
+  return Array.from({ length: Math.ceil(items.length / 2) }, (_, rowIndex) =>
+    items.slice(rowIndex * 2, rowIndex * 2 + 2),
+  );
 }
 
 export function AboutStatsSection({ stats }: AboutStatsSectionProps) {

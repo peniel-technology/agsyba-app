@@ -7,7 +7,7 @@ import type { ContactFaqData } from '@/data/contactFaq';
 
 interface ContactFAQSectionProps {
   data: ContactFaqData;
-  onViewAllPress: () => void;
+  onViewAllPress?: () => void;
 }
 
 export const ContactFAQSection = memo(function ContactFAQSection({
@@ -55,16 +55,18 @@ export const ContactFAQSection = memo(function ContactFAQSection({
         ))}
       </View>
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={data.buttonText}
-        className="self-stretch h-11 w-full rounded-sm border border-zinc-900 items-center justify-center"
-        onPress={onViewAllPress}
-      >
-        <Text className="text-xs font-manrope-bold uppercase text-neutral-900">
-          {data.buttonText}
-        </Text>
-      </Pressable>
+      {onViewAllPress && data.buttonText ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={data.buttonText}
+          className="h-11 w-full items-center justify-center self-stretch rounded-sm border border-zinc-900"
+          onPress={onViewAllPress}
+        >
+          <Text className="text-xs font-manrope-bold uppercase text-neutral-900">
+            {data.buttonText}
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 });

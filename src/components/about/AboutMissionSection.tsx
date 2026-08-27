@@ -12,8 +12,9 @@ export function AboutMissionSection({ label, quote }: AboutMissionSectionProps) 
     <View className="self-stretch items-center bg-brand px-6 py-12">
       <View className="gap-4 self-stretch">
         <Text
-          className="text-xs font-extrabold uppercase text-white text-center"
+          className="text-center text-xs font-extrabold uppercase text-white"
           tone="brandForeground"
+          variant="overline"
         >
           {label}
         </Text>

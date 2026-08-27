@@ -1,7 +1,7 @@
-import type { KeyboardTypeOptions } from 'react-native';
-import { TextInput, View } from 'react-native';
+import type { BlurEvent, KeyboardTypeOptions } from 'react-native';
+import { TextInput } from 'react-native';
 
-import { Text } from '@/components/ui/Text';
+import { ContactField } from '@/components/contact/ContactField';
 import { colors } from '@/theme/colors';
 
 export interface ContactTextFieldProps {
@@ -9,6 +9,8 @@ export interface ContactTextFieldProps {
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
+  onBlur?: (event: BlurEvent) => void;
+  error?: string;
   keyboardType?: KeyboardTypeOptions;
 }
 
@@ -17,20 +19,23 @@ export function ContactTextField({
   placeholder,
   value,
   onChangeText,
+  onBlur,
+  error,
   keyboardType = 'default',
 }: ContactTextFieldProps) {
   return (
-    <View className="w-full flex-col gap-1.5">
-      <Text className="text-xs font-manrope-bold text-neutral-900">{label}</Text>
+    <ContactField error={error} label={label}>
       <TextInput
         accessibilityLabel={label}
-        className="h-11 rounded-sm border border-zinc-100 bg-white px-4 text-sm font-manrope text-neutral-900"
+        accessibilityHint={error}
+        className={`h-11 rounded-sm border bg-white px-4 text-sm font-manrope text-neutral-900 ${error ? 'border-error' : 'border-zinc-100'}`}
         keyboardType={keyboardType}
+        onBlur={onBlur}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={colors.muted}
         value={value}
       />
-    </View>
+    </ContactField>
   );
 }

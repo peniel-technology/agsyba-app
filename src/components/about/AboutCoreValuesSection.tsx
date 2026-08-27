@@ -3,26 +3,18 @@ import type { ComponentType } from 'react';
 import { View } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
+import type { AboutCoreValue, AboutCoreValueIcon } from '@/types/about';
 import { colors, iconSizes, iconStrokeWidths } from '@/theme';
-
-type CoreValueIconName = 'quality' | 'customer' | 'sustainable';
 
 type CoreValueIconComponent = ComponentType<{ color: string; size: number; strokeWidth: number }>;
 
 interface CoreValueCardProps {
-  icon: CoreValueIconName;
+  icon: AboutCoreValueIcon;
   description: string;
   title: string;
 }
 
-interface AboutCoreValue {
-  description: string;
-  icon: CoreValueIconName;
-  id: string;
-  title: string;
-}
-
-const iconMap: Record<CoreValueIconName, CoreValueIconComponent> = {
+const iconMap: Record<AboutCoreValueIcon, CoreValueIconComponent> = {
   customer: Heart,
   quality: ShieldCheck,
   sustainable: Leaf,

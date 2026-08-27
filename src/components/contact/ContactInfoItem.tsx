@@ -1,32 +1,55 @@
-import { Text } from '@/components/ui/Text';
-import { type ReactNode } from 'react';
+import { Clock, Mail, MapPin, Phone, type LucideIcon } from 'lucide-react-native';
 import { View } from 'react-native';
 
+import { Text } from '@/components/ui/Text';
+import { colors, iconSizes, iconStrokeWidths } from '@/theme';
+import type { ContactInformationItem } from '@/types/contact';
+
 export interface ContactInfoItemProps {
-  icon: ReactNode;
-  label: string;
-  value: string;
-  valueColor?: string;
+  icon: ContactInformationItem['icon'];
+  label: ContactInformationItem['label'];
+  value: ContactInformationItem['value'];
+  valueSize?: ContactInformationItem['valueSize'];
+  valueTone?: ContactInformationItem['valueTone'];
+  valueWeight?: ContactInformationItem['valueWeight'];
 }
 
-export function ContactInfoItem({ icon, label, value, valueColor }: ContactInfoItemProps) {
-  const isSmallValueText = label === 'OUR ADDRESS' || label === 'WORKING HOURS';
-  const hasValueMediumWeight = label === 'EMAIL US' || label === 'WORKING HOURS';
-  const valueToneClass = valueColor === 'primary' ? 'text-red-500' : 'text-neutral-900';
-  const valueSizeClass = isSmallValueText ? 'text-xs' : 'text-sm';
-  const valueWeightClass = hasValueMediumWeight ? 'font-medium' : 'font-normal';
+const infoIconMap: Record<ContactInformationItem['icon'], LucideIcon> = {
+  'map-pin': MapPin,
+  clock: Clock,
+  mail: Mail,
+  phone: Phone,
+};
 
+function ContactInfoIcon({ icon }: Pick<ContactInfoItemProps, 'icon'>) {
+  const Icon = infoIconMap[icon];
+
+  return (
+    <Icon color={colors.brand} size={iconSizes.compact} strokeWidth={iconStrokeWidths.emphasized} />
+  );
+}
+
+export function ContactInfoItem({
+  icon,
+  label,
+  value,
+  valueSize = 'regular',
+  valueTone = 'default',
+  valueWeight = 'regular',
+}: ContactInfoItemProps) {
   return (
     <View className="self-stretch flex-row items-start gap-4">
       <View className="size-9 items-center justify-center rounded-2xl bg-white shadow-md">
-        {icon}
+        <ContactInfoIcon icon={icon} />
       </View>
       <View className="flex-1 flex-col items-start gap-1">
-        <Text className="font-manrope justify-start text-xs font-bold uppercase text-neutral-500">
+        <Text tone="muted" variant="captionStrong">
           {label}
         </Text>
         <Text
-          className={`font-manrope self-stretch justify-start ${valueToneClass} ${valueSizeClass} ${valueWeightClass}`}
+          className={`self-stretch ${valueSize === 'compact' ? 'text-xs' : 'text-sm'} ${valueWeight === 'medium' ? 'font-medium' : 'font-normal'}`}
+          tone={valueTone}
+          variant="body"
         >
           {value}
         </Text>
